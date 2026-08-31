@@ -1,0 +1,110 @@
+# MPC-local grounding paired-CARLA mechanism pilot.
+# Fixed before the first non-smoke collection/training run.
+
+schema_version: 1
+torch_num_threads: 4
+
+collection:
+  carla_version: "0.9.15"
+  host: "127.0.0.1"
+  port: 2100
+  map: "/Game/Carla/Maps/Town10HD_Opt"
+  fixed_delta_seconds: 0.05
+  horizon_ticks: 20
+  action_segments: 2
+  vehicle_filter: "vehicle.tesla.model3"
+  no_rendering: true
+  seed: 17031
+  states:
+    train: 16
+    val: 8
+    test: 8
+  initial_speeds_mps: [4.0, 6.0, 8.0]
+  target_speed_mps: 8.0
+  require_non_junction_spawn: true
+  minimum_forward_road_m: 25.0
+
+cem:
+  iterations: 3
+  population: 24
+  elite_count: 6
+  initial_mean: [0.0, 0.4, 0.0, 0.4]
+  initial_std: [0.35, 0.45, 0.35, 0.45]
+  lower: [-0.7, -1.0, -0.7, -1.0]
+  upper: [0.7, 1.0, 0.7, 1.0]
+  minimum_std: [0.03, 0.05, 0.03, 0.05]
+
+# outcome = [progress/10m, lateral/3m, yaw_error/pi, (speed-target)/target]
+cost:
+  progress_weight: -0.20
+  lateral_squared_weight: 1.50
+  yaw_squared_weight: 0.80
+  speed_squared_weight: 0.40
+  # Each effort term is the mean squared magnitude across the two segments.
+  steering_squared_weight: 0.02
+  longitudinal_squared_weight: 0.01
+  collision_weight: 10.0
+  pair_tie_threshold: 0.005
+
+model:
+  latent_dim: 16
+  hidden_dim: 64
+
+training:
+  seeds: [17, 29, 43]
+  epochs: 250
+  patience: 30
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  gradient_clip_norm: 5.0
+  rank_weight: 0.25
+  inverse_weight: 0.10
+  pair_budget_per_state: 64
+  prediction_records_cem_iteration: 0
+  # Outcome-independent SHA-256 ordering makes the split deterministic without
+  # systematically assigning low/high steering values to one arm.
+  # Iteration-0 first 12 are shared prediction targets; the disjoint remaining
+  # 12 are global ranking queries. Elite ranking uses 12 iteration-2 queries.
+  prediction_candidates_per_state: 12
+  rank_query_candidates_per_state: 12
+  candidate_partition_order: sha256_state_action_seed
+  variants:
+    - prediction_only
+    - global_rank
+    - elite_rank
+    - elite_rank_inverse
+
+evaluation:
+  state_macro: true
+  bootstrap_samples: 2000
+  validation_cem_iteration: 2
+  open_test_once_after_selection: true
+
+gates:
+  # The proposed problem must actually exist before claiming a method win.
+  minimum_non_tied_elite_pair_fraction: 0.30
+  minimum_baseline_global_to_elite_spearman_drop: 0.05
+  # The planner-distribution-aware variant must beat both relevant baselines.
+  minimum_elite_spearman_gain: 0.05
+  minimum_selection_regret_reduction_fraction: 0.20
+  maximum_global_outcome_mse_degradation_fraction: 0.10
+  required_validation_seeds: 2
+  # Weaker one-shot confirmation thresholds on the sealed state split.
+  minimum_test_elite_spearman_gain: 0.03
+  minimum_test_regret_reduction_fraction: 0.10
+  required_test_seeds: 2
+
+remediation:
+  # At most one disclosed validation-only repair is allowed before test open.
+  maximum_rounds: 1
+  allowed_only_if:
+    - optimization_underfit
+    - numerical_cost_scale_error
+    - candidate_margin_degeneracy
+  forbidden:
+    - changing_test_states
+    - choosing_on_test_metrics
+    - relabeling_model_predictions_as_real_outcomes
+    - forcing_separation_for_real_cost_ties
+    - reusing_failed_tfpp_metric_warp

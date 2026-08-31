@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "experiment": "mpc_local_grounding_pilot_v3",
+  "status": "frozen_before_non_smoke_collection",
+  "frozen_at_utc": "2026-08-28T09:48:06Z",
+  "scope": "fresh Town05 low-dimensional paired-dynamics mechanism study",
+  "planned_one_shot_outputs": {
+    "collection": "artifacts/mpc_local_grounding_carla_v3_r1",
+    "validation": "artifacts/mpc_local_grounding_pilot_v3_validation_r1"
+  },
+  "planned_commands": {
+    "collection": "PYTHONDONTWRITEBYTECODE=1 ${TFPP_ROOT}/.venv/bin/python scripts/collect_mpc_local_carla_v3.py --config configs/mpc_local_grounding_pilot_v3.yaml --output artifacts/mpc_local_grounding_carla_v3_r1",
+    "validation": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$PWD/src ${TFPP_ROOT}/.venv/bin/python scripts/run_mpc_local_grounding_pilot_v3.py --config configs/mpc_local_grounding_pilot_v3.yaml --data artifacts/mpc_local_grounding_carla_v3_r1/development_records.npz --manifest artifacts/mpc_local_grounding_carla_v3_r1/manifest.json --output artifacts/mpc_local_grounding_pilot_v3_validation_r1 --device cpu"
+  },
+  "frozen_experiment_contract": {
+    "states": {"train": 32, "outer_validation": 16, "sealed_test": 12},
+    "train_partition": {"fit": 24, "inner_checkpoint_validation": 8},
+    "candidates_per_state": {"cem_iterations": 3, "population": 24, "elite_count": 6},
+    "variants": ["prediction_only", "global_listwise", "elite_listwise"],
+    "common_outcome_iteration": 1,
+    "global_query_iteration": 0,
+    "elite_query_iteration": 2,
+    "query_candidates_per_state": 24,
+    "listwise_target": "deterministic_real_argmin_one_hot",
+    "listwise_temperature": 0.005,
+    "listwise_weight": 0.25,
+    "training": {"seeds": [17, 29, 43], "max_epochs": 1200, "min_epochs": 300, "patience": 200},
+    "primary_metric": "deterministic_exact_argmin_simple_regret",
+    "required_exact_regret_reduction_fraction": 0.20,
+    "required_passing_seeds": 2,
+    "outer_validation_policy": "once_after_all_inner_checkpoints_are_frozen"
+  },
+  "terminal_policy": {
+    "non_smoke_collection_runs_before_freeze": 0,
+    "outer_validation_runs_before_freeze": 0,
+    "posthoc_remediation_rounds": 0,
+    "sealed_test_access": "prohibited"
+  },
+  "frozen_files": {
+    "configs/mpc_local_grounding_pilot_v3.yaml": "be4821cf20d17564b28db020d0c5337c48239819aea173a5e30be7105aa45d24",
+    "docs/MPC_LOCAL_GROUNDING_PILOT_V3_PROTOCOL.md": "2c4e94e52a1e5d8a50f11c34c0f17debb6de39a74843a00c53daa6b2472728ee",
+    "scripts/collect_mpc_local_carla.py": "6d75882889471c4686ac9e324f2b554e0e82a8678c6b1814952bb93802ed6677",
+    "scripts/collect_mpc_local_carla_v3.py": "70ed6c7e731dab306b4336a6cd10e2aad0a0174ffacb852841d8e0e0043d14e8",
+    "scripts/run_mpc_local_grounding_pilot_v3.py": "ee6d0bad92029104b84fe843edc22ac7b00cd81bfee363312ac958ea1779f6ff",
+    "src/temporal_tf/mpc_local_grounding.py": "a782e078bb0258e5f352014c91c28e652219ad46eabeedc845510e316b169594",
+    "tests/test_mpc_local_carla_v3_collector.py": "0d81ffe3cf7fa8a0438a42275b0d0588176af81762958e3023b44ffc9dbee259",
+    "tests/test_mpc_local_grounding_v3.py": "4a4d228c9e720a309816cccc647c6efd26d13475449e0ddb02298259f4ffab6b",
+    "tests/test_mpc_local_grounding_runner_manifest.py": "58c230b50836e5175905010c766bde7c83f36fdeceb5d6ca120cd38dcb019ec5",
+    "tests/test_mpc_local_grounding.py": "c4606c919bc1fdd66e8f1d7d2f695c242a3b853246355bf2e61140367c55cf81"
+  },
+  "runtime_protocol_sha256": "34ef56b0ea83b1c3cf8937d561fbe8881e7efc3261141f3c4a0c733903c24bf7",
+  "environment": {
+    "python": "3.10.12",
+    "numpy": "1.26.4",
+    "torch": "2.5.0+cu124",
+    "cuda_runtime": "12.4",
+    "cuda_available": true,
+    "pyyaml": "6.0.3",
+    "carla_client": "0.9.15",
+    "carla_server": "0.9.15",
+    "carla_port": 2100,
+    "configured_map": "/Game/Carla/Maps/Town05_Opt",
+    "observed_map": "Carla/Maps/Town05_Opt"
+  },
+  "verification": {
+    "combined_unittest_methods": 34,
+    "combined_unittest_status": "pass",
+    "py_compile_status": "pass",
+    "manifest_only_strong_seal_audit": "pass",
+    "runner_smoke_preflight_status": "non_evidentiary_smoke_preflight_pass"
+  },
+  "smoke_evidence": {
+    "collector_output": "artifacts/mpc_local_grounding_carla_v3_smoke_r4",
+    "collector_manifest_sha256": "9974065050be70b92fd457142ce699ed8a312118dcf4d9451f979bc14c0787f5",
+    "development_records_sha256": "800326c9e1ac2f5fc88670469df8156dc86a87b77f40500419106a7276d5b4ec",
+    "development_diagnostics_sha256": "ee8b25145c63752dc1289b46c80a326b94c53bb7d4e10984e548d8425632238a",
+    "runner_output": "artifacts/mpc_local_grounding_pilot_v3_runner_smoke_r5",
+    "runner_results_sha256": "7ce65a23e56ef96c646ebb1ecf12dd0500790cb0ed2b2c75ff0a31ca19371a00",
+    "smoke_runtime_protocol_sha256": "42df2872aab92b6782fb83cd80b8b8ff2275ef15cbb68056e1e23bb56f9d9a04"
+  },
+  "sealed_smoke_attestations_copied_from_public_manifest": {
+    "payloads_opened_or_hashed_by_preregistration_audit": false,
+    "sealed_records_declared_sha256": "5c77964758ac8464e6ad78c90eee718b979e276663754088ba5234f6e944a70f",
+    "sealed_diagnostics_declared_sha256": "2b86b2406840c82013b5db698fd72eaba4beaab24fb98a1eb077d7d3684b262d",
+    "sealed_states_declared_sha256": "4afeb1aabc6b16a8ec4a93de8b3176dca4e1a8bc61a6884dd088817c0eb2614a"
+  }
+}

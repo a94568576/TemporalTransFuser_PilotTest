@@ -1,0 +1,124 @@
+# MPC-local grounding paired-CARLA mechanism pilot, safe-local V2 remediation.
+# Frozen before any V2 non-smoke collection or any V1 model-performance read.
+
+schema_version: 1
+torch_num_threads: 4
+
+collection:
+  carla_version: "0.9.15"
+  host: "127.0.0.1"
+  port: 2100
+  map: "/Game/Carla/Maps/Town10HD_Opt"
+  fixed_delta_seconds: 0.05
+  horizon_ticks: 20
+  action_segments: 2
+  vehicle_filter: "vehicle.tesla.model3"
+  no_rendering: true
+  action_profile: "safe_local_v2"
+  seed: 27031
+  states:
+    train: 16
+    val: 8
+    test: 8
+  initial_speeds_mps: [4.0, 6.0, 8.0]
+  target_speed_mps: 8.0
+  require_non_junction_spawn: true
+  minimum_forward_road_m: 25.0
+  # The collector profile excludes all 32 V1 source spawn indices before the
+  # seeded draw, making every V2 state and its sealed test split genuinely new.
+  exclude_parent_v1_spawn_states: true
+  parent_v1_states_sha256: "b8c4e5cebaaf1be629308c70ef6f22c6d529b027b982d0025cc0640c74143ee3"
+  parent_v1_records_sha256: "f3cb11ad2ea8159427a6ff305e582dfb01bbee4860be4341f2a580f4f77f137e"
+
+cem:
+  iterations: 3
+  population: 24
+  elite_count: 6
+  initial_mean: [0.0, 0.4, 0.0, 0.4]
+  # Local steering support is the sole V2 search-space remediation.  All
+  # longitudinal values and every other CEM setting remain identical to V1.
+  initial_std: [0.12, 0.45, 0.12, 0.45]
+  lower: [-0.20, -1.0, -0.20, -1.0]
+  upper: [0.20, 1.0, 0.20, 1.0]
+  minimum_std: [0.015, 0.05, 0.015, 0.05]
+
+# outcome = [progress/10m, lateral/3m, yaw_error/pi, (speed-target)/target]
+cost:
+  progress_weight: -0.20
+  lateral_squared_weight: 1.50
+  yaw_squared_weight: 0.80
+  speed_squared_weight: 0.40
+  steering_squared_weight: 0.02
+  longitudinal_squared_weight: 0.01
+  collision_weight: 10.0
+  pair_tie_threshold: 0.005
+
+model:
+  latent_dim: 16
+  hidden_dim: 64
+
+training:
+  seeds: [17, 29, 43]
+  epochs: 250
+  patience: 30
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  gradient_clip_norm: 5.0
+  rank_weight: 0.25
+  inverse_weight: 0.10
+  pair_budget_per_state: 64
+  prediction_records_cem_iteration: 0
+  prediction_candidates_per_state: 12
+  rank_query_candidates_per_state: 12
+  candidate_partition_order: sha256_state_action_seed
+  variants:
+    - prediction_only
+    - global_rank
+    - elite_rank
+    - elite_rank_inverse
+
+evaluation:
+  state_macro: true
+  bootstrap_samples: 2000
+  validation_cem_iteration: 2
+  open_test_once_after_selection: true
+
+gates:
+  # This integrity gate is evaluated before training or any performance metric.
+  required_collision_records: 0
+  minimum_non_tied_elite_pair_fraction: 0.30
+  minimum_baseline_global_to_elite_spearman_drop: 0.05
+  minimum_elite_spearman_gain: 0.05
+  minimum_selection_regret_reduction_fraction: 0.20
+  maximum_global_outcome_mse_degradation_fraction: 0.10
+  required_validation_seeds: 2
+  minimum_test_elite_spearman_gain: 0.03
+  minimum_test_regret_reduction_fraction: 0.10
+  required_test_seeds: 2
+
+remediation:
+  revision: 2
+  parent_revision: 1
+  used_rounds: 1
+  maximum_additional_rounds: 0
+  trigger: "V1 collision-free integrity precondition failed (13/2304 records)"
+  decision_timing: "before observing any V1 model-performance metric"
+  changed_only:
+    - collection_seed_and_fresh_state_split
+    - steering_search_bounds_and_standard_deviations
+  unchanged:
+    - horizon
+    - longitudinal_search_distribution
+    - cost_and_tie_definition
+    - model_and_losses
+    - training_label_budget
+    - evaluation_metrics_and_thresholds
+  forbidden:
+    - any_v3_action_profile_tuning
+    - changing_test_states
+    - choosing_on_test_metrics
+    - injecting_real_collision_labels_into_predicted_cost
+    - relabeling_model_predictions_as_real_outcomes
+    - forcing_separation_for_real_cost_ties
+    - reusing_failed_tfpp_metric_warp

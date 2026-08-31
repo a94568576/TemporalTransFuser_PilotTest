@@ -1,0 +1,261 @@
+# MPC-local grounding V3: fresh, preregistered top-selection mechanism study.
+# This file must be hashed and frozen before any non-smoke V3 collection.
+# V1/V2 identities below are exclusion/provenance evidence only; no V1/V2
+# record, checkpoint, validation value, or sealed-test value may be reused.
+
+schema_version: 3
+experiment: "mpc_local_grounding_pilot_v3"
+torch_num_threads: 4
+
+collection:
+  carla_version: "0.9.15"
+  host: "127.0.0.1"
+  port: 2100
+  map: "/Game/Carla/Maps/Town05_Opt"
+  fixed_delta_seconds: 0.05
+  horizon_ticks: 20
+  action_segments: 2
+  vehicle_filter: "vehicle.tesla.model3"
+  no_rendering: true
+  action_profile: "support_stratified_v3"
+  seed: 37031
+  states:
+    train: 32
+    val: 16       # fresh outer gate validation; never used for checkpoints
+    test: 12      # sealed and inaccessible in this V3 experiment
+  initial_speeds_mps: [4.0, 6.0, 8.0]
+  lateral_offsets_m: [-0.25, 0.0, 0.25]
+  target_speed_mps: 8.0
+  require_non_junction_spawn: true
+  minimum_forward_road_m: 25.0
+  # Town05 literal spawn points are overwhelmingly straight. Generate a
+  # deterministic 5 m waypoint pool instead so curvature coverage is real.
+  state_source: "map_generate_waypoints"
+  waypoint_spacing_m: 5.0
+  require_unique_base_waypoint_per_state: true
+  state_identity_fields:
+    - map
+    - road_id
+    - section_id
+    - lane_id
+    - waypoint_s
+    - lateral_offset_m
+    - initial_speed_mps
+  state_stratification:
+    curvature_score: "max_abs_curvature_5m_10m_20m"
+    curvature_bins: 4
+    binning: "stable_rank_quantiles"
+    balance_factors:
+      - curvature_bin
+      - initial_speed_mps
+      - lateral_offset_m
+    maximum_marginal_count_difference: 1
+    deterministic_order: "sha256_map_waypoint_seed"
+  initial_state_audit:
+    require_requested_actual_lateral_match: true
+    # Neutral physics activation changes the requested pose/speed slightly;
+    # cross-candidate equality remains governed by the much stricter reset gate.
+    lateral_tolerance_m: 0.05
+    require_requested_actual_speed_match: true
+    speed_tolerance_mps: 0.20
+  # Test payloads are physically separate, not merely filtered by split code.
+  # The runner may open only the development files. For sealed files it may
+  # read the public manifest entry and confirm path existence, but it may not
+  # open, hash, mmap, inspect a ZIP header, or decode the payload.
+  outputs:
+    development_records: "development_records.npz"
+    sealed_test_records: "test_records_sealed.npz"
+    development_diagnostics: "development_diagnostics.npz"
+    sealed_test_diagnostics: "test_diagnostics_sealed.npz"
+    manifest: "manifest.json"
+  sealed_test_redaction: true
+  public_manifest_redaction:
+    states_scope: "development_only"
+    split_state_ids: [train, val]
+    require_sealed_test_states_sha256: true
+    sealed_test_integrity_fields:
+      - states
+      - records
+      - split_code
+      - states_sha256
+      - schema_finite_passed
+      - reset_passed
+      - control_execution_passed
+      - individual_state_metadata_redacted
+      - sealed_test_stratification_passed
+    forbid_sealed_individual_state_ids_or_covariates: true
+    forbid_sealed_outcome_cost_collision_aggregates: true
+    forbid_sealed_outcome_cost_collision_stdout: true
+
+cem:
+  iterations: 3
+  population: 24
+  elite_count: 6
+  initial_mean: [0.0, 0.4, 0.0, 0.4]
+  # Identical to the collision-free V2 safe-local support. V3 does not tune
+  # the action range after seeing V2 performance.
+  initial_std: [0.12, 0.45, 0.12, 0.45]
+  lower: [-0.20, -1.0, -0.20, -1.0]
+  upper: [0.20, 1.0, 0.20, 1.0]
+  minimum_std: [0.015, 0.05, 0.015, 0.05]
+
+# outcome = [progress/10m, lateral/3m, yaw_error/pi, (speed-target)/target]
+cost:
+  progress_weight: -0.20
+  lateral_squared_weight: 1.50
+  yaw_squared_weight: 0.80
+  speed_squared_weight: 0.40
+  steering_squared_weight: 0.02
+  longitudinal_squared_weight: 0.01
+  collision_weight: 10.0
+  pair_tie_threshold: 0.005
+
+model:
+  latent_dim: 16
+  hidden_dim: 64
+
+training:
+  seeds: [17, 29, 43]
+  variants:
+    - prediction_only
+    - global_listwise
+    - elite_listwise
+
+  # The 32 train states are split without looking at outcomes: 24 fit states
+  # and 8 checkpoint-validation states. The outer 16 val states are excluded
+  # from fitting, early stopping, checkpoint choice, and all normalization.
+  inner_validation_states: 8
+  inner_validation_order: "sha256_state_identity_collection_seed"
+
+  max_epochs: 1200
+  min_epochs: 300
+  patience: 200
+  checkpoint_min_delta: 0.000001
+  checkpoint_metric: "inner_common_outcome_mse_plus_weighted_top1_ce"
+  checkpoint_tie_break: "earliest_epoch"
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  gradient_clip_norm: 5.0
+
+  # One state-level list contains every candidate from the queried iteration.
+  # target = one-hot deterministic exact real-cost argmin;
+  # logits = -predicted_cost / listwise_temperature.
+  listwise_objective: "top1_cross_entropy"
+  listwise_target_mode: "deterministic_real_argmin_one_hot"
+  exact_argmin_tie_break: "sha256_raw_action_bytes"
+  listwise_weight: 0.25
+  listwise_temperature: 0.005
+
+  # Full-iteration accounting eliminates best-candidate omission. Every arm
+  # receives 24 common outcome labels plus 24 unique query labels per fit
+  # state. SHA ordering is deterministic only; no candidate is subsampled.
+  prediction_records_cem_iteration: 1
+  prediction_candidates_per_state: 24
+  rank_query_candidates_per_state: 24
+  global_query_cem_iteration: 0
+  elite_query_cem_iteration: 2
+  candidate_partition_order: "full_iteration_sha256_state_action_seed"
+  require_full_iteration_queries: true
+  common_prediction_unique_rollouts_per_state: 24
+  arm_unique_query_rollouts_per_state: 24
+  total_labeled_rollouts_per_ranking_arm_state: 48
+
+evaluation:
+  state_macro: true
+  bootstrap_samples: 5000
+  validation_cem_iteration: 2
+  primary_metric: "deterministic_exact_argmin_simple_regret"
+  exact_argmin_tie_break: "sha256_raw_action_bytes"
+  epsilon_regret: 0.005
+  epsilon_regret_definition: "max(0, exact_simple_regret - epsilon)"
+  secondary_metrics:
+    - epsilon_regret
+    - exact_top1_accuracy
+    - spearman
+    - global_outcome_mse
+  outer_gate_policy: "evaluate_once_after_all_inner_checkpoints_are_frozen"
+  test_access: "prohibited"
+
+gates:
+  # Collection/integrity gates are checked before any training metric.
+  required_collision_records: 0      # development payload only
+  collision_gate_scope: "development_only"
+  required_development_records: 3456 # (32 train + 16 val) x 3 x 24
+  required_test_records: 864          # 12 sealed-test x 3 x 24; manifest only
+  required_total_records_attested: 4320
+  required_train_states: 32
+  required_outer_validation_states: 16
+  required_sealed_test_states: 12
+  required_development_split_codes: [0, 1]
+  required_sealed_test_split_codes: [2]
+  require_separate_sealed_test_records: true
+  require_separate_sealed_test_diagnostics: true
+  sealed_test_runner_verification: "manifest_role_path_count_sha_format_and_file_existence_only"
+  forbid_runner_open_or_hash_sealed_payload: true
+  require_sealed_test_states_sha256: true
+  require_sealed_test_integrity_attestation: true
+  require_sealed_test_individual_state_metadata_redacted: true
+  allow_sealed_test_stratification_boolean_only: true
+  require_map_disjoint_from_v1_v2: true
+  require_unique_base_waypoint_per_state: true
+  require_stratification_balance: true
+  require_equal_global_elite_unique_query_rollouts: true
+  require_full_iteration_query_coverage: true
+
+  # Problem-existence gate: final candidate sets must have a meaningful cost
+  # range on at least 75% of outer states. The best/second-best gap is reported
+  # but is not used to delete or reweight states.
+  minimum_outer_state_fraction_cost_range_gt_epsilon: 0.75
+
+  # A seed passes only if elite_listwise satisfies every condition below.
+  # Fractional reduction is (baseline-elite)/abs(baseline). If a baseline
+  # regret is numerically zero, that comparison cannot claim a 20% reduction.
+  minimum_exact_regret_reduction_fraction_vs_global_listwise: 0.20
+  minimum_exact_regret_reduction_fraction_vs_prediction_only: 0.20
+  maximum_epsilon_regret_absolute_degradation_vs_global_listwise: 0.00025
+  maximum_global_outcome_mse_degradation_fraction: 0.10
+  required_outer_gate_seeds: 2
+
+  # Bootstrap intervals and all secondary metrics are mandatory reports, not
+  # alternative rescue gates. V3 GO is determined only by the rules above.
+  bootstrap_unit: "outer_validation_state"
+  confidence_level: 0.95
+
+provenance:
+  source_revision: 3
+  parent_revision: 2
+  official_v2_status: "no_go"
+  official_v2_results_path: "artifacts/mpc_local_grounding_pilot_v2_validation_r2/results.json"
+  official_v2_results_sha256: "ac24de4b1eb682d764b26fce8e196deb862582b623acc6904d5a4be96a5f9cf5"
+  parent_v1:
+    map: "/Game/Carla/Maps/Town10HD_Opt"
+    states_sha256: "b8c4e5cebaaf1be629308c70ef6f22c6d529b027b982d0025cc0640c74143ee3"
+    records_sha256: "f3cb11ad2ea8159427a6ff305e582dfb01bbee4860be4341f2a580f4f77f137e"
+    manifest_sha256: "a47140de23e0ffe6cbda314d2bd6d45008fdfc60d5f14721789916b7e5d1aeec"
+  parent_v2:
+    map: "/Game/Carla/Maps/Town10HD_Opt"
+    states_sha256: "ca435de3f2f25f3e5614989879b89dc7679cfb81e85d8bedb4719da0f897fa73"
+    records_sha256: "ecd0f8c7e9a97b6f8bf7c6b96b0994231a9649eddb83b9935c61f04246f84ff7"
+    manifest_sha256: "06c81140a318a6489830baf285e656b6a81fc7d02a837e0387b5343e2442a260"
+    collection_config_sha256: "5d0e41e740df2b1347ea2e05e39cde9a84ab06b51624494516f09ac0f672de50"
+  reuse_scope: "none"
+  fresh_data_required: true
+  fresh_outer_validation_required: true
+  v1_v2_test_access: "prohibited"
+
+terminal_policy:
+  posthoc_remediation_rounds: 0
+  on_integrity_failure: "terminal_no_go"
+  on_outer_gate_failure: "terminal_no_go"
+  on_outer_gate_success: "mechanism_go_only_no_test_opening"
+  forbidden:
+    - reusing_any_v1_or_v2_record_for_v3_fit_checkpoint_or_gate
+    - opening_any_v1_v2_or_v3_sealed_test
+    - opening_hashing_mmapping_or_decoding_v3_sealed_test_payload
+    - changing_states_or_excluding_outer_states_after_collection
+    - changing_loss_temperature_weight_schedule_metric_or_gate_after_outer_results
+    - selecting_seed_or_checkpoint_on_outer_validation
+    - injecting_real_collision_labels_into_predicted_cost
+    - claiming_label_efficiency_from_oracle_cem_pool_collection
+    - claiming_visual_world_model_or_closed_loop_mpc_success

@@ -1,0 +1,33 @@
+seed: 17
+
+data:
+  history_length: 4
+  # Past frozen-model paths are converted from their original ego frame into
+  # the current ego frame before entering the GRU.
+  align_past_trajectories: true
+  max_frame_gap: 1
+  validate_on_load: false
+  require_deep_audit: true
+
+adapter:
+  bev_compressed_channels: 64
+  bev_pooled_size: 8
+  bev_token_dim: 128
+  hidden_dim: 128
+  query_dim: 128
+  dropout: 0.1
+  learned_gate: true
+
+training:
+  epochs: 20
+  batch_size: 64
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  residual_weight: 0.05
+  gradient_clip_norm: 5.0
+  num_workers: 0
+  torch_num_threads: 4
+
+evaluation:
+  # This is an oracle diagnostic selected with baseline GT error.
+  worst_fraction: 0.2

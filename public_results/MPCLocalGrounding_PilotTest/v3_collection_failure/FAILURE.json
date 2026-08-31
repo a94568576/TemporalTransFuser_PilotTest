@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "experiment": "mpc_local_grounding_pilot_v3",
+  "status": "terminal_no_go_pretraining_integrity_failure",
+  "recorded_at_utc": "2026-08-28T09:52:49Z",
+  "failure_stage": "non_smoke_collection_development_collision_gate",
+  "invocation": "PYTHONDONTWRITEBYTECODE=1 ${TFPP_ROOT}/.venv/bin/python scripts/collect_mpc_local_carla_v3.py --config configs/mpc_local_grounding_pilot_v3.yaml --output artifacts/mpc_local_grounding_carla_v3_r1",
+  "exit_code": 1,
+  "exception": "RuntimeError: V3 collision-free collection gate failed",
+  "preregistration": {
+    "manifest_path": "artifacts/mpc_local_grounding_pilot_v3_preregistration/FROZEN_MANIFEST.json",
+    "manifest_sha256": "40dcfba0a358c62f0d6431e2bffd6c9b316cc93fe71f09e73113cd7d14ee7066",
+    "posthoc_remediation_rounds": 0,
+    "on_integrity_failure": "terminal_no_go"
+  },
+  "development_collision_gate": {
+    "scope": "development_only",
+    "required_collision_labels": 0,
+    "required_collision_events": 0,
+    "observed_collision_labels": 3,
+    "observed_collision_events": 5,
+    "observed_collision_impulse_sum": 37087.6103515625,
+    "affected_development_state_iterations_from_stdout": [
+      {"state_id": 5, "split": "train", "cem_iteration": 0, "collision_labels": 1},
+      {"state_id": 28, "split": "train", "cem_iteration": 0, "collision_labels": 1},
+      {"state_id": 31, "split": "train", "cem_iteration": 0, "collision_labels": 1}
+    ],
+    "passed": false
+  },
+  "execution_scope": {
+    "all_60_state_rollouts_completed_before_audit": true,
+    "training_started": false,
+    "inner_checkpoint_selection_started": false,
+    "outer_validation_evaluated": false,
+    "selection_manifest_created": false
+  },
+  "atomic_publish_and_cleanup": {
+    "requested_output_exists": false,
+    "staging_output_remaining": false,
+    "carla_settings_restored": true,
+    "carla_synchronous_mode_after_failure": false,
+    "carla_no_rendering_mode_after_failure": false,
+    "carla_fixed_delta_seconds_after_failure": null,
+    "experiment_vehicle_or_collision_sensor_actors_remaining": 0
+  },
+  "sealed_test": {
+    "internal_collection_completed": true,
+    "stdout_values_redacted": true,
+    "payload_published": false,
+    "payload_opened_hashed_mapped_or_decoded_by_runner_or_auditor": false,
+    "outcome_cost_collision_status": "unknown_not_accessed"
+  },
+  "interpretation": {
+    "technical_crash": false,
+    "scientific_integrity_gate_worked_as_designed": true,
+    "current_model_has_collision_prediction_head": false,
+    "why_training_was_forbidden": "Predicted cost assumes zero collision; training/evaluating with real colliding candidates would make planning regret incomparable to the frozen physical objective.",
+    "minor_same_data_rescue_allowed": false,
+    "forbidden_posthoc_rescues": [
+      "delete or replace states 5, 28, or 31",
+      "drop colliding candidates",
+      "shrink action support after observing the failures",
+      "inject simulator collision labels into predicted cost",
+      "change the collision gate and reuse this outer validation"
+    ],
+    "smallest_defensible_successor": "A fresh preregistered collision-aware model/data study with an explicit collision-probability head, sufficient positive and hard-negative collision labels, new fit/inner/outer states, and the same sealed-test prohibition."
+  }
+}

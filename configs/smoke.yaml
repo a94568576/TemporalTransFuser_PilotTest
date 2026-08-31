@@ -1,0 +1,30 @@
+seed: 17
+
+data:
+  history_length: 4
+  align_past_trajectories: true
+  max_frame_gap: 1
+  validate_on_load: true
+  require_deep_audit: true
+
+adapter:
+  bev_compressed_channels: 8
+  bev_pooled_size: 4
+  bev_token_dim: 24
+  hidden_dim: 32
+  query_dim: 24
+  dropout: 0.0
+  learned_gate: true
+
+training:
+  epochs: 4
+  batch_size: 32
+  learning_rate: 0.003
+  weight_decay: 0.0001
+  residual_weight: 0.05
+  gradient_clip_norm: 5.0
+  num_workers: 0
+  torch_num_threads: 2
+
+evaluation:
+  worst_fraction: 0.2

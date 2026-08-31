@@ -1,0 +1,19 @@
+# Stable logical route key followed by one explicit collection leaf root.
+# Paths are relative to this manifest. Never list a broad discovery directory.
+Accident_1044_0 ../data/raw_real_smoke/Accident_1044_0
+AccidentTwoWays_1153_0 ../data/raw_real_pilot_town13_v1_routes14_retry/AccidentTwoWays_1153_0
+BlockedIntersection_1634_0 ../data/raw_real_pilot_town13_v1_routes14_retry/BlockedIntersection_1634_0
+ConstructionObstacle_1260_0 ../data/raw_real_pilot_town13_v1_routes14_retry/ConstructionObstacle_1260_0
+ControlLoss_1589_0 ../data/raw_real_pilot_town13_v1_routes14_retry/ControlLoss_1589_0
+DynamicObjectCrossing_1317_0 ../data/raw_real_pilot_town13_v1_routes14_retry/DynamicObjectCrossing_1317_0
+EnterActorFlow_1382_0 ../data/raw_real_pilot_town13_v1_routes14_retry/EnterActorFlow_1382_0
+# Both HazardAtSideLane seed-1619 collections reproduced the same vehicle collision.
+# Keep those immutable failure records, but use this pre-audit replacement route instead.
+NonSignalizedJunctionRightTurn_73_0 ../data/raw_real_pilot_replacements/NonSignalizedJunctionRightTurn_73_0
+HighwayCutIn_1586_0 ../data/raw_real_pilot_town13_v1_routes14_retry/HighwayCutIn_1586_0
+InvadingTurn_1575_0 ../data/raw_real_pilot_town13_v1_routes14_retry/InvadingTurn_1575_0
+NonSignalizedJunctionLeftTurn_1509_0 ../data/raw_real_pilot_town13_v1_routes14_retry/NonSignalizedJunctionLeftTurn_1509_0
+OppositeVehicleRunningRedLight_1245_0 ../data/raw_real_pilot_town13_v1_routes14_retry/OppositeVehicleRunningRedLight_1245_0
+PedestrianCrossing_1061_0 ../data/raw_real_pilot_town13_v1_routes14_retry/PedestrianCrossing_1061_0
+SignalizedJunctionRightTurn_1121_0 ../data/raw_real_pilot_town13_v1_routes14_retry/SignalizedJunctionRightTurn_1121_0
+VehicleTurningRoute_1160_0 ../data/raw_real_pilot_town13_v1_routes14_retry/VehicleTurningRoute_1160_0

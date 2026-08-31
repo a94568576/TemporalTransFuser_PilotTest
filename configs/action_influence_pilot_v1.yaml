@@ -1,0 +1,56 @@
+# Action-influence observational proxy V1. Every value is an operational
+# assumption fixed before fitting, not a causal/counterfactual claim.
+
+torch_num_threads: 4
+
+data:
+  cache: data/cache_action_latent_town13_v1_native64
+  analysis_splits: [train, val]
+  # Four saved 4 Hz controls span the one-second endpoint transition.
+  horizon: 4
+  horizon_seconds: 1.0
+  # Native-64 warp preparation is inference-only; eight samples fit the 8 GiB GPU.
+  prepare_batch_size: 8
+  # Uses recorded future pose and is therefore an oracle geometry diagnostic.
+  oracle_current_to_future_se2_warp: true
+
+base:
+  seed: 17
+  hidden_channels: 16
+  epochs: 20
+  patience: 5
+  batch_size: 16
+  learning_rate: 0.001
+  weight_decay: 0.0001
+
+adapter:
+  hidden_channels: 16
+  action_hidden_dim: 64
+  # sigmoid(-5) ~= 0.0067; the residual starts close to the frozen base.
+  gate_bias: -5.0
+  residual_budget_weight: 0.0001
+  # Four fixed train-only references approximate the action marginal.
+  reference_count: 4
+  epochs: 25
+  patience: 6
+  batch_size: 8
+  learning_rate: 0.001
+  weight_decay: 0.0001
+
+# Directional reproducibility only; these are not independent datasets.
+seeds: [17, 29, 43]
+
+evaluation:
+  bootstrap_samples: 2000
+  finite_difference_samples: 64
+  # +/-0.1 in train-standardized action coordinates.
+  finite_difference_perturbation: 0.1
+
+gates:
+  improvement_percent: 3.0
+  shuffled_penalty_percent: 2.0
+  required_seeds: 2
+  # Protocol correction for the final rerun: a learned/warped method cannot
+  # advance if it is worse than direct unaligned latent persistence. No model
+  # hyperparameter changed after the omission was found in the initial run.
+  require_beat_raw_persistence: true

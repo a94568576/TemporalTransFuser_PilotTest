@@ -1,0 +1,1855 @@
+{
+  "schema_version": 1,
+  "experiment": "observational_action_influence_proxy_v1",
+  "smoke": false,
+  "started_at": "2026-08-28T06:20:01.594969+00:00",
+  "completed_at": "2026-08-28T06:22:35.647216+00:00",
+  "device": "cuda:0",
+  "config": {
+    "torch_num_threads": 4,
+    "data": {
+      "cache": "data/cache_action_latent_town13_v1_native64",
+      "analysis_splits": [
+        "train",
+        "val"
+      ],
+      "horizon": 4,
+      "horizon_seconds": 1.0,
+      "prepare_batch_size": 8,
+      "oracle_current_to_future_se2_warp": true
+    },
+    "base": {
+      "seed": 17,
+      "hidden_channels": 16,
+      "epochs": 20,
+      "patience": 5,
+      "batch_size": 16,
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001
+    },
+    "adapter": {
+      "hidden_channels": 16,
+      "action_hidden_dim": 64,
+      "gate_bias": -5.0,
+      "residual_budget_weight": 0.0001,
+      "reference_count": 4,
+      "epochs": 25,
+      "patience": 6,
+      "batch_size": 8,
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001
+    },
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "evaluation": {
+      "bootstrap_samples": 2000,
+      "finite_difference_samples": 64,
+      "finite_difference_perturbation": 0.1
+    },
+    "gates": {
+      "improvement_percent": 3.0,
+      "shuffled_penalty_percent": 2.0,
+      "required_seeds": 2
+    }
+  },
+  "config_path": "${PROJECT_ROOT}/configs/action_influence_pilot_v1.yaml",
+  "config_sha256": "5c5bc02a0f9ff89ef05ea86f8265cd3532e60f16c94801e4748c6ad9a7f80d69",
+  "normalization": {
+    "path": "${PROJECT_ROOT}/artifacts/action_influence_pilot_v1/train_normalization.pt",
+    "sha256": "17db3c0ddc745c35e3f8558217751dc11f8a3c5fcb53d360ce188a7225b68f74",
+    "latent_channels": 64,
+    "action_mean": [
+      0.012563287280499935,
+      0.406602680683136,
+      0.4143907427787781
+    ],
+    "action_std": [
+      0.1076200008392334,
+      0.420722097158432,
+      0.49261653423309326
+    ]
+  },
+  "data": {
+    "cache_root": "${PROJECT_ROOT}/data/cache_action_latent_town13_v1_native64",
+    "cache_index_sha256": "8d7b8459dbfcf53c676f6b936ca3e8383fa9db762d6031f823b3fdb3f68a1aea",
+    "analysis_splits": [
+      "train",
+      "val"
+    ],
+    "test_evaluation_performed": false,
+    "test_lock_claim": "none: this cache was extracted and deep-audited across all records; test is simply excluded from training/evaluation",
+    "horizon_saved_frames": 4,
+    "nominal_horizon_seconds": 1.0,
+    "train_transitions": 952,
+    "val_transitions": 286,
+    "train_routes": 9,
+    "val_routes": 3,
+    "feature_shape": [
+      64,
+      64,
+      64
+    ],
+    "action_shape": [
+      4,
+      3
+    ],
+    "action_semantics": [
+      "saved_steer_pre_noise",
+      "saved_throttle_pre_some_overrides",
+      "bool(brake_or_control_brake)"
+    ],
+    "oracle_ego_warp": "current BEV warped to future ego frame using recorded future pose; diagnostic, not deployable prediction",
+    "train_sample_ids_sha256": "094e314be2ea8f7a87f5c9efb07c66f27294c7f030bf4b2c2a89f6c285e18479",
+    "val_sample_ids_sha256": "3dab98d8a516641f923c9986f53d1db0ed9043e7f14e4e8e80d2b36db46779d8",
+    "control_manifest_sha256": "ed9ff5106ed9e95e45d13c75d42a8496bfa667ef0dbe599d588b19f6c6a8bce4"
+  },
+  "warp_diagnostics": {
+    "train": {
+      "mean_valid_fraction": 0.9117960929870605,
+      "raw_persistence_micro_mse": 0.34999415278434753,
+      "oracle_warp_persistence_micro_mse": 0.642625093460083,
+      "loss_support": "oracle_warp_overlap_validity_mask",
+      "raw_persistence_route_macro_mse": 0.3879766915036496,
+      "oracle_warp_persistence_route_macro_mse": 0.7074246052484728
+    },
+    "val": {
+      "mean_valid_fraction": 0.8924934267997742,
+      "raw_persistence_micro_mse": 0.36215850710868835,
+      "oracle_warp_persistence_micro_mse": 0.8034384250640869,
+      "loss_support": "oracle_warp_overlap_validity_mask",
+      "raw_persistence_route_macro_mse": 0.4267078455500519,
+      "oracle_warp_persistence_route_macro_mse": 0.855360534688165
+    }
+  },
+  "base_training": {
+    "seed": 17,
+    "best_epoch": 14,
+    "best_val_route_macro_mse": 0.5503589044273879,
+    "epochs_ran": 19,
+    "history": [
+      {
+        "epoch": 1,
+        "train_micro_mse": 0.5588188752532005,
+        "val_route_macro_mse": 0.6715179213065978
+      },
+      {
+        "epoch": 2,
+        "train_micro_mse": 0.49107111394405367,
+        "val_route_macro_mse": 0.6200054658972106
+      },
+      {
+        "epoch": 3,
+        "train_micro_mse": 0.4678024619817734,
+        "val_route_macro_mse": 0.5956511487160839
+      },
+      {
+        "epoch": 4,
+        "train_micro_mse": 0.45379899988571804,
+        "val_route_macro_mse": 0.5933245440829674
+      },
+      {
+        "epoch": 5,
+        "train_micro_mse": 0.4465297356247902,
+        "val_route_macro_mse": 0.5792696098348892
+      },
+      {
+        "epoch": 6,
+        "train_micro_mse": 0.4387980535626411,
+        "val_route_macro_mse": 0.5796797029935864
+      },
+      {
+        "epoch": 7,
+        "train_micro_mse": 0.43625931988159816,
+        "val_route_macro_mse": 0.5685849831829444
+      },
+      {
+        "epoch": 8,
+        "train_micro_mse": 0.43337261974811553,
+        "val_route_macro_mse": 0.5748218615717776
+      },
+      {
+        "epoch": 9,
+        "train_micro_mse": 0.42773684511582055,
+        "val_route_macro_mse": 0.563059242721449
+      },
+      {
+        "epoch": 10,
+        "train_micro_mse": 0.4241754507025083,
+        "val_route_macro_mse": 0.5569251448722669
+      },
+      {
+        "epoch": 11,
+        "train_micro_mse": 0.4211299275358518,
+        "val_route_macro_mse": 0.5570232550576544
+      },
+      {
+        "epoch": 12,
+        "train_micro_mse": 0.4192214960853259,
+        "val_route_macro_mse": 0.5553539887491362
+      },
+      {
+        "epoch": 13,
+        "train_micro_mse": 0.4170994927485784,
+        "val_route_macro_mse": 0.5600764267454766
+      },
+      {
+        "epoch": 14,
+        "train_micro_mse": 0.41571757197380066,
+        "val_route_macro_mse": 0.5503589044273879
+      },
+      {
+        "epoch": 15,
+        "train_micro_mse": 0.4137337177991867,
+        "val_route_macro_mse": 0.5544375020174596
+      },
+      {
+        "epoch": 16,
+        "train_micro_mse": 0.41267059644063314,
+        "val_route_macro_mse": 0.5574424361829031
+      },
+      {
+        "epoch": 17,
+        "train_micro_mse": 0.40900501956542334,
+        "val_route_macro_mse": 0.5533844883277736
+      },
+      {
+        "epoch": 18,
+        "train_micro_mse": 0.40852788438399634,
+        "val_route_macro_mse": 0.5504407664093981
+      },
+      {
+        "epoch": 19,
+        "train_micro_mse": 0.4089616147180398,
+        "val_route_macro_mse": 0.5534422475065409
+      }
+    ],
+    "trainable_parameters": 12640
+  },
+  "base_checkpoint": {
+    "path": "${PROJECT_ROOT}/artifacts/action_influence_pilot_v1/base/best.pt",
+    "sha256": "3d0fd44dedd0eb4d1c456f7d6ce11f66810dabb50424ca971f42191024fc9460",
+    "bytes": 53738
+  },
+  "stage0": {
+    "action_neglect_diagnosis": "not_applicable_action_free_base",
+    "action_sensitivity": "structurally_zero_no_action_input",
+    "base_val_micro_mse": 0.5248279571533203,
+    "base_val_route_macro_mse": 0.5503589044273879,
+    "control_errors": {
+      "true": {
+        "micro_mse": 0.5248279571533203,
+        "route_macro_mse": 0.5503589044273879
+      },
+      "shuffled": {
+        "micro_mse": 0.5248279571533203,
+        "route_macro_mse": 0.5503589044273879
+      },
+      "zero": {
+        "micro_mse": 0.5248279571533203,
+        "route_macro_mse": 0.5503589044273879
+      },
+      "hold": {
+        "micro_mse": 0.5248279571533203,
+        "route_macro_mse": 0.5503589044273879
+      },
+      "reverse": {
+        "micro_mse": 0.5248279571533203,
+        "route_macro_mse": 0.5503589044273879
+      },
+      "other": {
+        "micro_mse": 0.5248279571533203,
+        "route_macro_mse": 0.5503589044273879
+      }
+    },
+    "max_control_output_difference": 0.0,
+    "finite_difference_sensitivity": 0.0,
+    "invariance_audit": "pass"
+  },
+  "stage1": {
+    "uncentered_film": {
+      "17": {
+        "training": {
+          "variant": "uncentered_film",
+          "seed": 17,
+          "best_epoch": 24,
+          "best_val_true_route_macro_mse": 0.4937280039699538,
+          "epochs_ran": 25,
+          "gate": 0.01023180689662695,
+          "trainable_parameters": 27089,
+          "history": [
+            {
+              "epoch": 1,
+              "train_total_loss": 0.41028213601152436,
+              "train_future_mse": 0.4102819253917502,
+              "train_residual_budget": 0.0021084970161426306,
+              "val_true_route_macro_mse": 0.5443033452166112,
+              "gate": 0.007212843745946884
+            },
+            {
+              "epoch": 2,
+              "train_total_loss": 0.39904770467962536,
+              "train_future_mse": 0.399046447472412,
+              "train_residual_budget": 0.012580033675415301,
+              "val_true_route_macro_mse": 0.5333868310383606,
+              "gate": 0.007563469931483269
+            },
+            {
+              "epoch": 3,
+              "train_total_loss": 0.39125746213087514,
+              "train_future_mse": 0.39125538235451995,
+              "train_residual_budget": 0.020806921262513187,
+              "val_true_route_macro_mse": 0.5296261196657189,
+              "gate": 0.007726458832621574
+            },
+            {
+              "epoch": 4,
+              "train_total_loss": 0.38768731257995637,
+              "train_future_mse": 0.38768487755490955,
+              "train_residual_budget": 0.02435273119882375,
+              "val_true_route_macro_mse": 0.524013955228491,
+              "gate": 0.007831131108105183
+            },
+            {
+              "epoch": 5,
+              "train_total_loss": 0.38459441178486126,
+              "train_future_mse": 0.3845917529919568,
+              "train_residual_budget": 0.026600288735906117,
+              "val_true_route_macro_mse": 0.5215244172306355,
+              "gate": 0.007999580353498459
+            },
+            {
+              "epoch": 6,
+              "train_total_loss": 0.3833067132895734,
+              "train_future_mse": 0.38330381244671446,
+              "train_residual_budget": 0.029005681407176145,
+              "val_true_route_macro_mse": 0.5187732996648793,
+              "gate": 0.00805093627423048
+            },
+            {
+              "epoch": 7,
+              "train_total_loss": 0.38007697550689473,
+              "train_future_mse": 0.3800738307357836,
+              "train_residual_budget": 0.0314478851980021,
+              "val_true_route_macro_mse": 0.5148034597546712,
+              "gate": 0.008193526417016983
+            },
+            {
+              "epoch": 8,
+              "train_total_loss": 0.3778352305418303,
+              "train_future_mse": 0.3778319025740904,
+              "train_residual_budget": 0.0332887364128808,
+              "val_true_route_macro_mse": 0.5140814922814884,
+              "gate": 0.008324776776134968
+            },
+            {
+              "epoch": 9,
+              "train_total_loss": 0.3754670432134837,
+              "train_future_mse": 0.3754633534856203,
+              "train_residual_budget": 0.03687790919001363,
+              "val_true_route_macro_mse": 0.5153377394054938,
+              "gate": 0.008411239832639694
+            },
+            {
+              "epoch": 10,
+              "train_total_loss": 0.37361521142370563,
+              "train_future_mse": 0.37361148826214446,
+              "train_residual_budget": 0.03721922585944168,
+              "val_true_route_macro_mse": 0.513462279248023,
+              "gate": 0.008587470278143883
+            },
+            {
+              "epoch": 11,
+              "train_total_loss": 0.37190480505218027,
+              "train_future_mse": 0.3719007991442159,
+              "train_residual_budget": 0.040050345496470185,
+              "val_true_route_macro_mse": 0.5121903471928174,
+              "gate": 0.00868045724928379
+            },
+            {
+              "epoch": 12,
+              "train_total_loss": 0.3698715030395684,
+              "train_future_mse": 0.36986736201939463,
+              "train_residual_budget": 0.04140801447592363,
+              "val_true_route_macro_mse": 0.5082744142370984,
+              "gate": 0.008810380473732948
+            },
+            {
+              "epoch": 13,
+              "train_total_loss": 0.36797487886012104,
+              "train_future_mse": 0.3679705705462384,
+              "train_residual_budget": 0.04310119618513003,
+              "val_true_route_macro_mse": 0.5094334179333071,
+              "gate": 0.008985726162791252
+            },
+            {
+              "epoch": 14,
+              "train_total_loss": 0.367488340044222,
+              "train_future_mse": 0.3674838981207679,
+              "train_residual_budget": 0.04442045870510971,
+              "val_true_route_macro_mse": 0.5082503388950071,
+              "gate": 0.00906315352767706
+            },
+            {
+              "epoch": 15,
+              "train_total_loss": 0.36555140171231343,
+              "train_future_mse": 0.3655467528004606,
+              "train_residual_budget": 0.04647460085253756,
+              "val_true_route_macro_mse": 0.5055001197237483,
+              "gate": 0.009193919599056244
+            },
+            {
+              "epoch": 16,
+              "train_total_loss": 0.3640051398958479,
+              "train_future_mse": 0.3640004093406581,
+              "train_residual_budget": 0.04730989776176064,
+              "val_true_route_macro_mse": 0.5036580839698187,
+              "gate": 0.009327219799160957
+            },
+            {
+              "epoch": 17,
+              "train_total_loss": 0.36271901378611554,
+              "train_future_mse": 0.3627141914447817,
+              "train_residual_budget": 0.04823423349181143,
+              "val_true_route_macro_mse": 0.5027394777492682,
+              "gate": 0.009500917978584766
+            },
+            {
+              "epoch": 18,
+              "train_total_loss": 0.36108983514689597,
+              "train_future_mse": 0.36108470451431113,
+              "train_residual_budget": 0.05132201952593667,
+              "val_true_route_macro_mse": 0.5018271419386343,
+              "gate": 0.009561209939420223
+            },
+            {
+              "epoch": 19,
+              "train_total_loss": 0.3601079293910195,
+              "train_future_mse": 0.3601027695822115,
+              "train_residual_budget": 0.05159920964296125,
+              "val_true_route_macro_mse": 0.5003735201794351,
+              "gate": 0.009700768627226353
+            },
+            {
+              "epoch": 20,
+              "train_total_loss": 0.35887025008682444,
+              "train_future_mse": 0.35886502954639304,
+              "train_residual_budget": 0.05220912500214176,
+              "val_true_route_macro_mse": 0.5016516486707844,
+              "gate": 0.009841525927186012
+            },
+            {
+              "epoch": 21,
+              "train_total_loss": 0.3576350168270223,
+              "train_future_mse": 0.3576296044497931,
+              "train_residual_budget": 0.05413435828410277,
+              "val_true_route_macro_mse": 0.49826751172352574,
+              "gate": 0.009976211935281754
+            },
+            {
+              "epoch": 22,
+              "train_total_loss": 0.35679477290446016,
+              "train_future_mse": 0.35678920938688163,
+              "train_residual_budget": 0.055632447401265134,
+              "val_true_route_macro_mse": 0.49728817830462196,
+              "gate": 0.010047970339655876
+            },
+            {
+              "epoch": 23,
+              "train_total_loss": 0.3558278956583568,
+              "train_future_mse": 0.3558223506733149,
+              "train_residual_budget": 0.05544084470186915,
+              "val_true_route_macro_mse": 0.4969546934747367,
+              "gate": 0.01017632707953453
+            },
+            {
+              "epoch": 24,
+              "train_total_loss": 0.3554256036251533,
+              "train_future_mse": 0.3554198892176652,
+              "train_residual_budget": 0.057147962675124654,
+              "val_true_route_macro_mse": 0.4937280039699538,
+              "gate": 0.010231807827949524
+            },
+            {
+              "epoch": 25,
+              "train_total_loss": 0.35357498145904864,
+              "train_future_mse": 0.3535692030642213,
+              "train_residual_budget": 0.05778277324152594,
+              "val_true_route_macro_mse": 0.4951853441361747,
+              "gate": 0.010377448052167892
+            }
+          ]
+        },
+        "checkpoint": {
+          "path": "${PROJECT_ROOT}/artifacts/action_influence_pilot_v1/uncentered_film/seed_17/best.pt",
+          "sha256": "cbfb08ab4653bab442ff3ad5472eb2d2d62cecdab8bfd3fbfbfda4037e83b0b4",
+          "bytes": 114492
+        },
+        "metrics": {
+          "controls": {
+            "true": {
+              "micro_mse": 0.46109798550605774,
+              "route_macro_mse": 0.4937279998987396
+            },
+            "shuffled": {
+              "micro_mse": 0.48191314935684204,
+              "route_macro_mse": 0.5185366258499171,
+              "relative_penalty_vs_true_percent": 5.0247557270937815
+            },
+            "zero": {
+              "micro_mse": 0.5446966290473938,
+              "route_macro_mse": 0.5633471059360167,
+              "relative_penalty_vs_true_percent": 14.100700396079517
+            },
+            "hold": {
+              "micro_mse": 0.4726800322532654,
+              "route_macro_mse": 0.504219760202874,
+              "relative_penalty_vs_true_percent": 2.1250081636622062
+            },
+            "reverse": {
+              "micro_mse": 0.46694445610046387,
+              "route_macro_mse": 0.5023205228380743,
+              "relative_penalty_vs_true_percent": 1.740335354911394
+            },
+            "other": {
+              "micro_mse": 0.5792040228843689,
+              "route_macro_mse": 0.6039405736982321,
+              "relative_penalty_vs_true_percent": 22.322528562709902
+            }
+          },
+          "action_separation_rms": 0.1864621937274933,
+          "residual_to_base_error_rms_ratio": 0.3312538266181946,
+          "gate": 0.01023180689662695,
+          "spatial_map_definition": "RMS_channel_sample(prediction_control - prediction_true); oracle-warp overlap mask; model response map, not causal influence",
+          "finite_difference_sensitivity": 0.046100735664367676,
+          "inverse_action_probe": {
+            "state_only": {
+              "mean_r2": -0.7256852536415316,
+              "normalized_mae": 0.7900292856082498
+            },
+            "state_plus_predicted_residual": {
+              "mean_r2": -0.4869683880972739,
+              "normalized_mae": 0.6483983645617412
+            },
+            "delta_mean_r2": 0.2387168655442577
+          }
+        }
+      },
+      "29": {
+        "training": {
+          "variant": "uncentered_film",
+          "seed": 29,
+          "best_epoch": 25,
+          "best_val_true_route_macro_mse": 0.49158248472840055,
+          "epochs_ran": 25,
+          "gate": 0.01051734946668148,
+          "trainable_parameters": 27089,
+          "history": [
+            {
+              "epoch": 1,
+              "train_total_loss": 0.4100040169824071,
+              "train_future_mse": 0.41000380072774006,
+              "train_residual_budget": 0.0021756818081112377,
+              "val_true_route_macro_mse": 0.5408105462502278,
+              "gate": 0.007275334093719721
+            },
+            {
+              "epoch": 2,
+              "train_total_loss": 0.39712136908739554,
+              "train_future_mse": 0.39711991065189617,
+              "train_residual_budget": 0.014585793511394192,
+              "val_true_route_macro_mse": 0.5309819743863087,
+              "gate": 0.007577858399599791
+            },
+            {
+              "epoch": 3,
+              "train_total_loss": 0.3895370443077648,
+              "train_future_mse": 0.38953491031121806,
+              "train_residual_budget": 0.021330765198070964,
+              "val_true_route_macro_mse": 0.5225164187513971,
+              "gate": 0.00783465150743723
+            },
+            {
+              "epoch": 4,
+              "train_total_loss": 0.3851093027521582,
+              "train_future_mse": 0.38510665097156493,
+              "train_residual_budget": 0.026511843120600998,
+              "val_true_route_macro_mse": 0.5167698454470603,
+              "gate": 0.007959159091114998
+            },
+            {
+              "epoch": 5,
+              "train_total_loss": 0.38102560571762695,
+              "train_future_mse": 0.38102254421771076,
+              "train_residual_budget": 0.03059746159099731,
+              "val_true_route_macro_mse": 0.5169904853354995,
+              "gate": 0.008119503036141396
+            },
+            {
+              "epoch": 6,
+              "train_total_loss": 0.3772961498559022,
+              "train_future_mse": 0.3772927634104961,
+              "train_residual_budget": 0.03385264027331557,
+              "val_true_route_macro_mse": 0.5133075945705015,
+              "gate": 0.008321997709572315
+            },
+            {
+              "epoch": 7,
+              "train_total_loss": 0.3749238361581033,
+              "train_future_mse": 0.37492018988152515,
+              "train_residual_budget": 0.03647005587753629,
+              "val_true_route_macro_mse": 0.5148456207867153,
+              "gate": 0.00845314096659422
+            },
+            {
+              "epoch": 8,
+              "train_total_loss": 0.37226095344839977,
+              "train_future_mse": 0.37225707701775207,
+              "train_residual_budget": 0.03875966155666764,
+              "val_true_route_macro_mse": 0.5086859008794934,
+              "gate": 0.00861755944788456
+            },
+            {
+              "epoch": 9,
+              "train_total_loss": 0.3697704710379368,
+              "train_future_mse": 0.3697662532579999,
+              "train_residual_budget": 0.04216421475367887,
+              "val_true_route_macro_mse": 0.5086914572489302,
+              "gate": 0.008753812871873379
+            },
+            {
+              "epoch": 10,
+              "train_total_loss": 0.36740036984952557,
+              "train_future_mse": 0.3673959525943804,
+              "train_residual_budget": 0.044171609281867495,
+              "val_true_route_macro_mse": 0.5062774272483469,
+              "gate": 0.008882745169103146
+            },
+            {
+              "epoch": 11,
+              "train_total_loss": 0.3649012914725712,
+              "train_future_mse": 0.36489671356036885,
+              "train_residual_budget": 0.04578084814823976,
+              "val_true_route_macro_mse": 0.5012841824954319,
+              "gate": 0.009047513827681541
+            },
+            {
+              "epoch": 12,
+              "train_total_loss": 0.36318415929289427,
+              "train_future_mse": 0.3631792610683361,
+              "train_residual_budget": 0.04900196908401842,
+              "val_true_route_macro_mse": 0.503529580416224,
+              "gate": 0.009181699715554714
+            },
+            {
+              "epoch": 13,
+              "train_total_loss": 0.36204224774817456,
+              "train_future_mse": 0.36203731195766387,
+              "train_residual_budget": 0.04935967836122052,
+              "val_true_route_macro_mse": 0.4999603420302598,
+              "gate": 0.009283293038606644
+            },
+            {
+              "epoch": 14,
+              "train_total_loss": 0.36036738390181244,
+              "train_future_mse": 0.36036225314400777,
+              "train_residual_budget": 0.05131004127759893,
+              "val_true_route_macro_mse": 0.49911678173400026,
+              "gate": 0.009401973336935043
+            },
+            {
+              "epoch": 15,
+              "train_total_loss": 0.359168942360317,
+              "train_future_mse": 0.3591636808729973,
+              "train_residual_budget": 0.05260883400044521,
+              "val_true_route_macro_mse": 0.5015734451344128,
+              "gate": 0.009474783204495907
+            },
+            {
+              "epoch": 16,
+              "train_total_loss": 0.3581398674169508,
+              "train_future_mse": 0.35813447469923676,
+              "train_residual_budget": 0.053931180137295684,
+              "val_true_route_macro_mse": 0.5010046728823191,
+              "gate": 0.009582596831023693
+            },
+            {
+              "epoch": 17,
+              "train_total_loss": 0.3568018767513147,
+              "train_future_mse": 0.35679639099525806,
+              "train_residual_budget": 0.054866597588573186,
+              "val_true_route_macro_mse": 0.4958232383646776,
+              "gate": 0.009691272862255573
+            },
+            {
+              "epoch": 18,
+              "train_total_loss": 0.35565543362573415,
+              "train_future_mse": 0.3556498691063969,
+              "train_residual_budget": 0.05565223745813891,
+              "val_true_route_macro_mse": 0.4943581423888313,
+              "gate": 0.00985017791390419
+            },
+            {
+              "epoch": 19,
+              "train_total_loss": 0.35480726078277874,
+              "train_future_mse": 0.35480157630283293,
+              "train_residual_budget": 0.05684937195492392,
+              "val_true_route_macro_mse": 0.4952338916354467,
+              "gate": 0.00995382759720087
+            },
+            {
+              "epoch": 20,
+              "train_total_loss": 0.3539652173258677,
+              "train_future_mse": 0.3539593943527767,
+              "train_residual_budget": 0.05822540753904511,
+              "val_true_route_macro_mse": 0.4952712838351953,
+              "gate": 0.010033165104687214
+            },
+            {
+              "epoch": 21,
+              "train_total_loss": 0.35276762101830555,
+              "train_future_mse": 0.35276172429072755,
+              "train_residual_budget": 0.058977645234901364,
+              "val_true_route_macro_mse": 0.49641872383625846,
+              "gate": 0.010131454095244408
+            },
+            {
+              "epoch": 22,
+              "train_total_loss": 0.352693052852855,
+              "train_future_mse": 0.3526870319071938,
+              "train_residual_budget": 0.0602140084472524,
+              "val_true_route_macro_mse": 0.49628128943099387,
+              "gate": 0.01017001736909151
+            },
+            {
+              "epoch": 23,
+              "train_total_loss": 0.3515574279703012,
+              "train_future_mse": 0.3515514616204911,
+              "train_residual_budget": 0.05965465989683857,
+              "val_true_route_macro_mse": 0.49409449857024335,
+              "gate": 0.010316446423530579
+            },
+            {
+              "epoch": 24,
+              "train_total_loss": 0.3502621624399634,
+              "train_future_mse": 0.35025595879855276,
+              "train_residual_budget": 0.062042002793119735,
+              "val_true_route_macro_mse": 0.49471234020704385,
+              "gate": 0.010386544279754162
+            },
+            {
+              "epoch": 25,
+              "train_total_loss": 0.3497460552123414,
+              "train_future_mse": 0.34973986146329833,
+              "train_residual_budget": 0.06193601268054057,
+              "val_true_route_macro_mse": 0.49158248472840055,
+              "gate": 0.010517348535358906
+            }
+          ]
+        },
+        "checkpoint": {
+          "path": "${PROJECT_ROOT}/artifacts/action_influence_pilot_v1/uncentered_film/seed_29/best.pt",
+          "sha256": "093d54b697f05953f53802ff4357994343bcc701211ec88b19b5b1b55bcdb762",
+          "bytes": 114492
+        },
+        "metrics": {
+          "controls": {
+            "true": {
+              "micro_mse": 0.45876243710517883,
+              "route_macro_mse": 0.4915824839308107
+            },
+            "shuffled": {
+              "micro_mse": 0.47885382175445557,
+              "route_macro_mse": 0.5147640140666092,
+              "relative_penalty_vs_true_percent": 4.715694902396328
+            },
+            "zero": {
+              "micro_mse": 0.5337142944335938,
+              "route_macro_mse": 0.5523258060871149,
+              "relative_penalty_vs_true_percent": 12.356689699475478
+            },
+            "hold": {
+              "micro_mse": 0.46949005126953125,
+              "route_macro_mse": 0.5016873561564842,
+              "relative_penalty_vs_true_percent": 2.0555802039308846
+            },
+            "reverse": {
+              "micro_mse": 0.46461251378059387,
+              "route_macro_mse": 0.5001808525287588,
+              "relative_penalty_vs_true_percent": 1.749120214616567
+            },
+            "other": {
+              "micro_mse": 0.5729464292526245,
+              "route_macro_mse": 0.6007687158675658,
+              "relative_penalty_vs_true_percent": 22.21117218491511
+            }
+          },
+          "action_separation_rms": 0.1868916004896164,
+          "residual_to_base_error_rms_ratio": 0.3350600004196167,
+          "gate": 0.01051734946668148,
+          "spatial_map_definition": "RMS_channel_sample(prediction_control - prediction_true); oracle-warp overlap mask; model response map, not causal influence",
+          "finite_difference_sensitivity": 0.0409928560256958,
+          "inverse_action_probe": {
+            "state_only": {
+              "mean_r2": -0.7256852536415316,
+              "normalized_mae": 0.7900292856082498
+            },
+            "state_plus_predicted_residual": {
+              "mean_r2": -0.5385398584094655,
+              "normalized_mae": 0.6099740211512237
+            },
+            "delta_mean_r2": 0.18714539523206608
+          }
+        }
+      },
+      "43": {
+        "training": {
+          "variant": "uncentered_film",
+          "seed": 43,
+          "best_epoch": 24,
+          "best_val_true_route_macro_mse": 0.48603013536169604,
+          "epochs_ran": 25,
+          "gate": 0.010356498882174492,
+          "trainable_parameters": 27089,
+          "history": [
+            {
+              "epoch": 1,
+              "train_total_loss": 0.4111315828411519,
+              "train_future_mse": 0.4111314348312987,
+              "train_residual_budget": 0.0014845165716872392,
+              "val_true_route_macro_mse": 0.5467549443685149,
+              "gate": 0.007167469244450331
+            },
+            {
+              "epoch": 2,
+              "train_total_loss": 0.39954321374412344,
+              "train_future_mse": 0.3995420096301231,
+              "train_residual_budget": 0.012044000435432717,
+              "val_true_route_macro_mse": 0.5292807221360353,
+              "gate": 0.007558224722743034
+            },
+            {
+              "epoch": 3,
+              "train_total_loss": 0.39008069000825163,
+              "train_future_mse": 0.39007855087769133,
+              "train_residual_budget": 0.02140141192416684,
+              "val_true_route_macro_mse": 0.521219480825864,
+              "gate": 0.007775994949042797
+            },
+            {
+              "epoch": 4,
+              "train_total_loss": 0.38488766363188,
+              "train_future_mse": 0.38488500008062154,
+              "train_residual_budget": 0.026640742962412974,
+              "val_true_route_macro_mse": 0.5175376028181847,
+              "gate": 0.007931245490908623
+            },
+            {
+              "epoch": 5,
+              "train_total_loss": 0.38070274225803985,
+              "train_future_mse": 0.38069971869973573,
+              "train_residual_budget": 0.03023228493808698,
+              "val_true_route_macro_mse": 0.5094520791107054,
+              "gate": 0.008156738243997097
+            },
+            {
+              "epoch": 6,
+              "train_total_loss": 0.3775298693099943,
+              "train_future_mse": 0.37752643427928956,
+              "train_residual_budget": 0.034360210074722265,
+              "val_true_route_macro_mse": 0.5100233285068961,
+              "gate": 0.008271899074316025
+            },
+            {
+              "epoch": 7,
+              "train_total_loss": 0.3743714824193666,
+              "train_future_mse": 0.3743677153056409,
+              "train_residual_budget": 0.03766819055215651,
+              "val_true_route_macro_mse": 0.507003956649941,
+              "gate": 0.008395262993872166
+            },
+            {
+              "epoch": 8,
+              "train_total_loss": 0.3719694367727312,
+              "train_future_mse": 0.3719654991095807,
+              "train_residual_budget": 0.039383201726845334,
+              "val_true_route_macro_mse": 0.5038855239413492,
+              "gate": 0.008524168282747269
+            },
+            {
+              "epoch": 9,
+              "train_total_loss": 0.36977804633749634,
+              "train_future_mse": 0.3697738490936135,
+              "train_residual_budget": 0.04196216920468988,
+              "val_true_route_macro_mse": 0.5057531314418252,
+              "gate": 0.00860816240310669
+            },
+            {
+              "epoch": 10,
+              "train_total_loss": 0.36714903947685945,
+              "train_future_mse": 0.3671446293592453,
+              "train_residual_budget": 0.044087164385729474,
+              "val_true_route_macro_mse": 0.5006819989155632,
+              "gate": 0.008792583830654621
+            },
+            {
+              "epoch": 11,
+              "train_total_loss": 0.36510499310092764,
+              "train_future_mse": 0.36510034005682007,
+              "train_residual_budget": 0.046523789413461164,
+              "val_true_route_macro_mse": 0.4992887728347692,
+              "gate": 0.008905804716050625
+            },
+            {
+              "epoch": 12,
+              "train_total_loss": 0.3633789982364959,
+              "train_future_mse": 0.36337420018781136,
+              "train_residual_budget": 0.04797080694502141,
+              "val_true_route_macro_mse": 0.4954885710146715,
+              "gate": 0.009057617746293545
+            },
+            {
+              "epoch": 13,
+              "train_total_loss": 0.36184184716529205,
+              "train_future_mse": 0.36183685364843415,
+              "train_residual_budget": 0.04993731015119232,
+              "val_true_route_macro_mse": 0.4965820031521336,
+              "gate": 0.009159698151051998
+            },
+            {
+              "epoch": 14,
+              "train_total_loss": 0.36006318120395436,
+              "train_future_mse": 0.3600580421816401,
+              "train_residual_budget": 0.05138906899119625,
+              "val_true_route_macro_mse": 0.4953148412189103,
+              "gate": 0.009317408315837383
+            },
+            {
+              "epoch": 15,
+              "train_total_loss": 0.35884911836195393,
+              "train_future_mse": 0.35884384785880563,
+              "train_residual_budget": 0.052696804570801115,
+              "val_true_route_macro_mse": 0.4947866136008143,
+              "gate": 0.009379385970532894
+            },
+            {
+              "epoch": 16,
+              "train_total_loss": 0.35743549365957245,
+              "train_future_mse": 0.3574300562383748,
+              "train_residual_budget": 0.054377481842241365,
+              "val_true_route_macro_mse": 0.49285943869093646,
+              "gate": 0.009522444568574429
+            },
+            {
+              "epoch": 17,
+              "train_total_loss": 0.35587813636335003,
+              "train_future_mse": 0.355872616046617,
+              "train_residual_budget": 0.055198285478253326,
+              "val_true_route_macro_mse": 0.4925040108135194,
+              "gate": 0.00968160293996334
+            },
+            {
+              "epoch": 18,
+              "train_total_loss": 0.35517748614319233,
+              "train_future_mse": 0.35517181268259257,
+              "train_residual_budget": 0.05673296388019534,
+              "val_true_route_macro_mse": 0.4925183985228512,
+              "gate": 0.009779349900782108
+            },
+            {
+              "epoch": 19,
+              "train_total_loss": 0.35452570847603454,
+              "train_future_mse": 0.3545199047867991,
+              "train_residual_budget": 0.05803989340402499,
+              "val_true_route_macro_mse": 0.4899156268382259,
+              "gate": 0.009882043115794659
+            },
+            {
+              "epoch": 20,
+              "train_total_loss": 0.3537086406174828,
+              "train_future_mse": 0.3537028807551921,
+              "train_residual_budget": 0.057587158435783464,
+              "val_true_route_macro_mse": 0.48787549489513365,
+              "gate": 0.009947513230144978
+            },
+            {
+              "epoch": 21,
+              "train_total_loss": 0.35209524280884685,
+              "train_future_mse": 0.3520892631857335,
+              "train_residual_budget": 0.059797182366126723,
+              "val_true_route_macro_mse": 0.4871270261837382,
+              "gate": 0.01007070578634739
+            },
+            {
+              "epoch": 22,
+              "train_total_loss": 0.3514073481078909,
+              "train_future_mse": 0.3514012939789716,
+              "train_residual_budget": 0.060542309108902424,
+              "val_true_route_macro_mse": 0.4896408052236135,
+              "gate": 0.010167992673814297
+            },
+            {
+              "epoch": 23,
+              "train_total_loss": 0.35072631658125325,
+              "train_future_mse": 0.35072026670980855,
+              "train_residual_budget": 0.06050022378438661,
+              "val_true_route_macro_mse": 0.48787860584121007,
+              "gate": 0.010279138572514057
+            },
+            {
+              "epoch": 24,
+              "train_total_loss": 0.3505344339529005,
+              "train_future_mse": 0.3505282558563377,
+              "train_residual_budget": 0.06177636436304124,
+              "val_true_route_macro_mse": 0.48603013536169604,
+              "gate": 0.010356498882174492
+            },
+            {
+              "epoch": 25,
+              "train_total_loss": 0.3495644222037131,
+              "train_future_mse": 0.3495581876330015,
+              "train_residual_budget": 0.062340093291356785,
+              "val_true_route_macro_mse": 0.4860668012713443,
+              "gate": 0.01045756321400404
+            }
+          ]
+        },
+        "checkpoint": {
+          "path": "${PROJECT_ROOT}/artifacts/action_influence_pilot_v1/uncentered_film/seed_43/best.pt",
+          "sha256": "cc6d3c19b1449dbbd7efde105ebf47e723343dcb69b375ce1604153813c90dc7",
+          "bytes": 114492
+        },
+        "metrics": {
+          "controls": {
+            "true": {
+              "micro_mse": 0.4546872675418854,
+              "route_macro_mse": 0.48603013552172286
+            },
+            "shuffled": {
+              "micro_mse": 0.47426947951316833,
+              "route_macro_mse": 0.5097040425358101,
+              "relative_penalty_vs_true_percent": 4.870872253358287
+            },
+            "zero": {
+              "micro_mse": 0.5338892340660095,
+              "route_macro_mse": 0.5511574797929136,
+              "relative_penalty_vs_true_percent": 13.399857233395755
+            },
+            "hold": {
+              "micro_mse": 0.4662019908428192,
+              "route_macro_mse": 0.4967476425031692,
+              "relative_penalty_vs_true_percent": 2.205111617192581
+            },
+            "reverse": {
+              "micro_mse": 0.46169158816337585,
+              "route_macro_mse": 0.495879253439275,
+              "relative_penalty_vs_true_percent": 2.026441818670308
+            },
+            "other": {
+              "micro_mse": 0.5734487771987915,
+              "route_macro_mse": 0.6001616647720346,
+              "relative_penalty_vs_true_percent": 23.482397676390722
+            }
+          },
+          "action_separation_rms": 0.1864912211894989,
+          "residual_to_base_error_rms_ratio": 0.3530135452747345,
+          "gate": 0.010356498882174492,
+          "spatial_map_definition": "RMS_channel_sample(prediction_control - prediction_true); oracle-warp overlap mask; model response map, not causal influence",
+          "finite_difference_sensitivity": 0.049737825989723206,
+          "inverse_action_probe": {
+            "state_only": {
+              "mean_r2": -0.7256852536415316,
+              "normalized_mae": 0.7900292856082498
+            },
+            "state_plus_predicted_residual": {
+              "mean_r2": -0.760007996112642,
+              "normalized_mae": 0.6640603975957556
+            },
+            "delta_mean_r2": -0.034322742471110446
+          }
+        }
+      }
+    },
+    "centered_film_k4": {
+      "17": {
+        "training": {
+          "variant": "centered_film_k4",
+          "seed": 17,
+          "best_epoch": 17,
+          "best_val_true_route_macro_mse": 0.5237615648630224,
+          "epochs_ran": 23,
+          "gate": 0.008290363475680351,
+          "trainable_parameters": 27089,
+          "history": [
+            {
+              "epoch": 1,
+              "train_total_loss": 0.4095703380949357,
+              "train_future_mse": 0.40957007325496997,
+              "train_residual_budget": 0.0026580433834710883,
+              "val_true_route_macro_mse": 0.5388020153914289,
+              "gate": 0.007174795959144831
+            },
+            {
+              "epoch": 2,
+              "train_total_loss": 0.40075706934728544,
+              "train_future_mse": 0.40075589228077096,
+              "train_residual_budget": 0.011763527185241339,
+              "val_true_route_macro_mse": 0.5334392547284823,
+              "gate": 0.007261210586875677
+            },
+            {
+              "epoch": 3,
+              "train_total_loss": 0.3967753965564135,
+              "train_future_mse": 0.3967738318092683,
+              "train_residual_budget": 0.015635596126505807,
+              "val_true_route_macro_mse": 0.5327581167981621,
+              "gate": 0.007353013847023249
+            },
+            {
+              "epoch": 4,
+              "train_total_loss": 0.3940160166816551,
+              "train_future_mse": 0.3940142018704855,
+              "train_residual_budget": 0.01815412816896784,
+              "val_true_route_macro_mse": 0.5305693287899436,
+              "gate": 0.007415561005473137
+            },
+            {
+              "epoch": 5,
+              "train_total_loss": 0.3922096405710493,
+              "train_future_mse": 0.3922076090043332,
+              "train_residual_budget": 0.020326949217740226,
+              "val_true_route_macro_mse": 0.5291950139526671,
+              "gate": 0.007478613406419754
+            },
+            {
+              "epoch": 6,
+              "train_total_loss": 0.39017114030713795,
+              "train_future_mse": 0.39016901031762613,
+              "train_residual_budget": 0.021296434221836198,
+              "val_true_route_macro_mse": 0.5286790438977612,
+              "gate": 0.0075870538130402565
+            },
+            {
+              "epoch": 7,
+              "train_total_loss": 0.388509468245907,
+              "train_future_mse": 0.3885070722894508,
+              "train_residual_budget": 0.023951100827265186,
+              "val_true_route_macro_mse": 0.5292329686835496,
+              "gate": 0.00763863418251276
+            },
+            {
+              "epoch": 8,
+              "train_total_loss": 0.3870567833425618,
+              "train_future_mse": 0.387054350696692,
+              "train_residual_budget": 0.024327815651204905,
+              "val_true_route_macro_mse": 0.5280146163580238,
+              "gate": 0.007731096353381872
+            },
+            {
+              "epoch": 9,
+              "train_total_loss": 0.38538306676039175,
+              "train_future_mse": 0.38538035675257193,
+              "train_residual_budget": 0.027086704625051562,
+              "val_true_route_macro_mse": 0.528237403846421,
+              "gate": 0.007797473110258579
+            },
+            {
+              "epoch": 10,
+              "train_total_loss": 0.38395193782674164,
+              "train_future_mse": 0.3839491030999592,
+              "train_residual_budget": 0.028361162319466348,
+              "val_true_route_macro_mse": 0.5285149102843393,
+              "gate": 0.007852526381611824
+            },
+            {
+              "epoch": 11,
+              "train_total_loss": 0.38255574047064583,
+              "train_future_mse": 0.3825528178395343,
+              "train_residual_budget": 0.029223690959898865,
+              "val_true_route_macro_mse": 0.5292292904015744,
+              "gate": 0.007919367402791977
+            },
+            {
+              "epoch": 12,
+              "train_total_loss": 0.38136360562649096,
+              "train_future_mse": 0.3813605234653008,
+              "train_residual_budget": 0.030817163834238753,
+              "val_true_route_macro_mse": 0.5265051019955488,
+              "gate": 0.007992057129740715
+            },
+            {
+              "epoch": 13,
+              "train_total_loss": 0.38015210728685395,
+              "train_future_mse": 0.3801488767401511,
+              "train_residual_budget": 0.032317910194710024,
+              "val_true_route_macro_mse": 0.5275145394287373,
+              "gate": 0.008038968779146671
+            },
+            {
+              "epoch": 14,
+              "train_total_loss": 0.37933781192082316,
+              "train_future_mse": 0.3793345515717979,
+              "train_residual_budget": 0.0325997266761896,
+              "val_true_route_macro_mse": 0.5261654493273996,
+              "gate": 0.008109084330499172
+            },
+            {
+              "epoch": 15,
+              "train_total_loss": 0.3785028328665164,
+              "train_future_mse": 0.3784994748460145,
+              "train_residual_budget": 0.0336061888726569,
+              "val_true_route_macro_mse": 0.5255832516247012,
+              "gate": 0.00815467070788145
+            },
+            {
+              "epoch": 16,
+              "train_total_loss": 0.37763827062454547,
+              "train_future_mse": 0.3776348042888802,
+              "train_residual_budget": 0.03465428121168824,
+              "val_true_route_macro_mse": 0.5249794857691279,
+              "gate": 0.008219537325203419
+            },
+            {
+              "epoch": 17,
+              "train_total_loss": 0.37694941598828097,
+              "train_future_mse": 0.3769459103335853,
+              "train_residual_budget": 0.03504076187631914,
+              "val_true_route_macro_mse": 0.5237615648630224,
+              "gate": 0.008290363475680351
+            },
+            {
+              "epoch": 18,
+              "train_total_loss": 0.37650314499350157,
+              "train_future_mse": 0.37649951737467985,
+              "train_residual_budget": 0.03627158278802864,
+              "val_true_route_macro_mse": 0.5249082084974748,
+              "gate": 0.008315691724419594
+            },
+            {
+              "epoch": 19,
+              "train_total_loss": 0.375784407518491,
+              "train_future_mse": 0.37578073795102224,
+              "train_residual_budget": 0.03668618066032894,
+              "val_true_route_macro_mse": 0.525979763077986,
+              "gate": 0.008370884694159031
+            },
+            {
+              "epoch": 20,
+              "train_total_loss": 0.3752684054755363,
+              "train_future_mse": 0.37526476020071686,
+              "train_residual_budget": 0.03644570098610736,
+              "val_true_route_macro_mse": 0.5243585828890199,
+              "gate": 0.008418046869337559
+            },
+            {
+              "epoch": 21,
+              "train_total_loss": 0.3746143205075705,
+              "train_future_mse": 0.3746105458806543,
+              "train_residual_budget": 0.03774875239664767,
+              "val_true_route_macro_mse": 0.5242477921864022,
+              "gate": 0.008489544503390789
+            },
+            {
+              "epoch": 22,
+              "train_total_loss": 0.3739993679924172,
+              "train_future_mse": 0.3739955358895935,
+              "train_residual_budget": 0.038312112662095985,
+              "val_true_route_macro_mse": 0.5253655481682078,
+              "gate": 0.008519870229065418
+            },
+            {
+              "epoch": 23,
+              "train_total_loss": 0.3732711159381546,
+              "train_future_mse": 0.37326722598376394,
+              "train_residual_budget": 0.038904467190639315,
+              "val_true_route_macro_mse": 0.5245335523137211,
+              "gate": 0.008584121242165565
+            }
+          ]
+        },
+        "checkpoint": {
+          "path": "${PROJECT_ROOT}/artifacts/action_influence_pilot_v1/centered_film_k4/seed_17/best.pt",
+          "sha256": "44a3a98100924987d0acf8c47301f547fd7aac2006a163d3fb16f73906439d64",
+          "bytes": 114364
+        },
+        "metrics": {
+          "controls": {
+            "true": {
+              "micro_mse": 0.48847150802612305,
+              "route_macro_mse": 0.5237615646020598
+            },
+            "shuffled": {
+              "micro_mse": 0.5062069296836853,
+              "route_macro_mse": 0.5449144226951558,
+              "relative_penalty_vs_true_percent": 4.038642680695243
+            },
+            "zero": {
+              "micro_mse": 0.5629133582115173,
+              "route_macro_mse": 0.585585431125395,
+              "relative_penalty_vs_true_percent": 11.8038188942534
+            },
+            "hold": {
+              "micro_mse": 0.4974305331707001,
+              "route_macro_mse": 0.5318843239627702,
+              "relative_penalty_vs_true_percent": 1.5508505987608776
+            },
+            "reverse": {
+              "micro_mse": 0.4921773672103882,
+              "route_macro_mse": 0.5301451405055672,
+              "relative_penalty_vs_true_percent": 1.2187942634464648
+            },
+            "other": {
+              "micro_mse": 0.589293360710144,
+              "route_macro_mse": 0.6156790668907354,
+              "relative_penalty_vs_true_percent": 17.549493605647076
+            }
+          },
+          "action_separation_rms": 0.17104606330394745,
+          "residual_to_base_error_rms_ratio": 0.24718187749385834,
+          "gate": 0.008290363475680351,
+          "spatial_map_definition": "RMS_channel_sample(prediction_control - prediction_true); oracle-warp overlap mask; model response map, not causal influence",
+          "finite_difference_sensitivity": 0.027189014479517937,
+          "inverse_action_probe": {
+            "state_only": {
+              "mean_r2": -0.7256852536415316,
+              "normalized_mae": 0.7900292856082498
+            },
+            "state_plus_predicted_residual": {
+              "mean_r2": -0.3572875264962689,
+              "normalized_mae": 0.631484238389306
+            },
+            "delta_mean_r2": 0.3683977271452627
+          }
+        }
+      },
+      "29": {
+        "training": {
+          "variant": "centered_film_k4",
+          "seed": 29,
+          "best_epoch": 18,
+          "best_val_true_route_macro_mse": 0.5241850723479108,
+          "epochs_ran": 24,
+          "gate": 0.00849892571568489,
+          "trainable_parameters": 27089,
+          "history": [
+            {
+              "epoch": 1,
+              "train_total_loss": 0.41018138976157215,
+              "train_future_mse": 0.4101811306817191,
+              "train_residual_budget": 0.0025976595708145298,
+              "val_true_route_macro_mse": 0.542281384504489,
+              "gate": 0.007133482024073601
+            },
+            {
+              "epoch": 2,
+              "train_total_loss": 0.40194546337388143,
+              "train_future_mse": 0.40194446449520205,
+              "train_residual_budget": 0.009985846868410957,
+              "val_true_route_macro_mse": 0.5333998443134148,
+              "gate": 0.007329120766371489
+            },
+            {
+              "epoch": 3,
+              "train_total_loss": 0.39681976682999553,
+              "train_future_mse": 0.39681820659076467,
+              "train_residual_budget": 0.015607493477599585,
+              "val_true_route_macro_mse": 0.5309707650032096,
+              "gate": 0.00743913184851408
+            },
+            {
+              "epoch": 4,
+              "train_total_loss": 0.3939874517817457,
+              "train_future_mse": 0.3939857017092344,
+              "train_residual_budget": 0.017482846674016294,
+              "val_true_route_macro_mse": 0.530562807345052,
+              "gate": 0.00750188110396266
+            },
+            {
+              "epoch": 5,
+              "train_total_loss": 0.39148255832055034,
+              "train_future_mse": 0.39148046589699115,
+              "train_residual_budget": 0.02094612521033327,
+              "val_true_route_macro_mse": 0.5297980272781831,
+              "gate": 0.007593019865453243
+            },
+            {
+              "epoch": 6,
+              "train_total_loss": 0.38974484312935037,
+              "train_future_mse": 0.3897425450948106,
+              "train_residual_budget": 0.022973727528788464,
+              "val_true_route_macro_mse": 0.5280548483346073,
+              "gate": 0.007650705985724926
+            },
+            {
+              "epoch": 7,
+              "train_total_loss": 0.38789220429769083,
+              "train_future_mse": 0.38788982436937447,
+              "train_residual_budget": 0.02378281543986136,
+              "val_true_route_macro_mse": 0.5275976937733541,
+              "gate": 0.007745243608951569
+            },
+            {
+              "epoch": 8,
+              "train_total_loss": 0.38625389174753877,
+              "train_future_mse": 0.3862513312522103,
+              "train_residual_budget": 0.025599664006726582,
+              "val_true_route_macro_mse": 0.526800011774343,
+              "gate": 0.007802609819918871
+            },
+            {
+              "epoch": 9,
+              "train_total_loss": 0.38464753943331104,
+              "train_future_mse": 0.38464477245046313,
+              "train_residual_budget": 0.027682731241112996,
+              "val_true_route_macro_mse": 0.5270052764527432,
+              "gate": 0.007886978797614574
+            },
+            {
+              "epoch": 10,
+              "train_total_loss": 0.3835024622057666,
+              "train_future_mse": 0.38349958728341493,
+              "train_residual_budget": 0.028752248327271277,
+              "val_true_route_macro_mse": 0.5270906512272947,
+              "gate": 0.007945860736072063
+            },
+            {
+              "epoch": 11,
+              "train_total_loss": 0.3821927366637382,
+              "train_future_mse": 0.3821897923695941,
+              "train_residual_budget": 0.0294446670802451,
+              "val_true_route_macro_mse": 0.5271396558753282,
+              "gate": 0.008031287230551243
+            },
+            {
+              "epoch": 12,
+              "train_total_loss": 0.38086722791194916,
+              "train_future_mse": 0.3808640564690117,
+              "train_residual_budget": 0.03170087648665204,
+              "val_true_route_macro_mse": 0.5259323832858863,
+              "gate": 0.008106725290417671
+            },
+            {
+              "epoch": 13,
+              "train_total_loss": 0.37977429059874107,
+              "train_future_mse": 0.37977109461271463,
+              "train_residual_budget": 0.03196569618244632,
+              "val_true_route_macro_mse": 0.5265874420530171,
+              "gate": 0.00817809533327818
+            },
+            {
+              "epoch": 14,
+              "train_total_loss": 0.3788244865772103,
+              "train_future_mse": 0.37882117338541177,
+              "train_residual_budget": 0.0331351478591937,
+              "val_true_route_macro_mse": 0.5247067370650323,
+              "gate": 0.008245033212006092
+            },
+            {
+              "epoch": 15,
+              "train_total_loss": 0.37785573228567587,
+              "train_future_mse": 0.37785233644878163,
+              "train_residual_budget": 0.03395589223491544,
+              "val_true_route_macro_mse": 0.5247603148612424,
+              "gate": 0.008308617398142815
+            },
+            {
+              "epoch": 16,
+              "train_total_loss": 0.37678560827459606,
+              "train_future_mse": 0.37678199993963,
+              "train_residual_budget": 0.03606831179070873,
+              "val_true_route_macro_mse": 0.5257148221174722,
+              "gate": 0.008333543315529823
+            },
+            {
+              "epoch": 17,
+              "train_total_loss": 0.3759547907765172,
+              "train_future_mse": 0.37595116754038993,
+              "train_residual_budget": 0.036229259303199646,
+              "val_true_route_macro_mse": 0.524842169172847,
+              "gate": 0.008417843841016293
+            },
+            {
+              "epoch": 18,
+              "train_total_loss": 0.3751843814589396,
+              "train_future_mse": 0.37518071251757007,
+              "train_residual_budget": 0.03667638513470898,
+              "val_true_route_macro_mse": 0.5241850723479108,
+              "gate": 0.00849892571568489
+            },
+            {
+              "epoch": 19,
+              "train_total_loss": 0.3746093604244104,
+              "train_future_mse": 0.37460562298778727,
+              "train_residual_budget": 0.03737934033128144,
+              "val_true_route_macro_mse": 0.5242351379103305,
+              "gate": 0.008557950146496296
+            },
+            {
+              "epoch": 20,
+              "train_total_loss": 0.37414417296898467,
+              "train_future_mse": 0.3741403058046052,
+              "train_residual_budget": 0.038673403829398774,
+              "val_true_route_macro_mse": 0.5259063117997466,
+              "gate": 0.00856966245919466
+            },
+            {
+              "epoch": 21,
+              "train_total_loss": 0.3735871853447762,
+              "train_future_mse": 0.37358332356484997,
+              "train_residual_budget": 0.03861338901920479,
+              "val_true_route_macro_mse": 0.526955858873131,
+              "gate": 0.008626575581729412
+            },
+            {
+              "epoch": 22,
+              "train_total_loss": 0.3735742928350673,
+              "train_future_mse": 0.37357031134497215,
+              "train_residual_budget": 0.039822826365462874,
+              "val_true_route_macro_mse": 0.5262559221679447,
+              "gate": 0.008634796366095543
+            },
+            {
+              "epoch": 23,
+              "train_total_loss": 0.3725802356205067,
+              "train_future_mse": 0.3725763318919334,
+              "train_residual_budget": 0.03902724166126812,
+              "val_true_route_macro_mse": 0.5263343700098918,
+              "gate": 0.008693847805261612
+            },
+            {
+              "epoch": 24,
+              "train_total_loss": 0.37214416453317434,
+              "train_future_mse": 0.3721400767314334,
+              "train_residual_budget": 0.04087125645371295,
+              "val_true_route_macro_mse": 0.5255981404386613,
+              "gate": 0.008712117560207844
+            }
+          ]
+        },
+        "checkpoint": {
+          "path": "${PROJECT_ROOT}/artifacts/action_influence_pilot_v1/centered_film_k4/seed_29/best.pt",
+          "sha256": "67067466e345d47847e3e767f805bd1f140a7de047ee30a9bd95e1742f626d9e",
+          "bytes": 114428
+        },
+        "metrics": {
+          "controls": {
+            "true": {
+              "micro_mse": 0.4891210198402405,
+              "route_macro_mse": 0.5241850752408351
+            },
+            "shuffled": {
+              "micro_mse": 0.5077379941940308,
+              "route_macro_mse": 0.5463045605433722,
+              "relative_penalty_vs_true_percent": 4.219785405445647
+            },
+            "zero": {
+              "micro_mse": 0.5597298741340637,
+              "route_macro_mse": 0.58073509091262,
+              "relative_penalty_vs_true_percent": 10.78817737147574
+            },
+            "hold": {
+              "micro_mse": 0.4983961284160614,
+              "route_macro_mse": 0.5328738996197832,
+              "relative_penalty_vs_true_percent": 1.6575871365578219
+            },
+            "reverse": {
+              "micro_mse": 0.49392253160476685,
+              "route_macro_mse": 0.5323145455179219,
+              "relative_penalty_vs_true_percent": 1.5508778599527488
+            },
+            "other": {
+              "micro_mse": 0.5892199277877808,
+              "route_macro_mse": 0.6175280077539557,
+              "relative_penalty_vs_true_percent": 17.807247272394093
+            }
+          },
+          "action_separation_rms": 0.1722089797258377,
+          "residual_to_base_error_rms_ratio": 0.25042080879211426,
+          "gate": 0.00849892571568489,
+          "spatial_map_definition": "RMS_channel_sample(prediction_control - prediction_true); oracle-warp overlap mask; model response map, not causal influence",
+          "finite_difference_sensitivity": 0.024708300828933716,
+          "inverse_action_probe": {
+            "state_only": {
+              "mean_r2": -0.7256852536415316,
+              "normalized_mae": 0.7900292856082498
+            },
+            "state_plus_predicted_residual": {
+              "mean_r2": -0.4748404845385194,
+              "normalized_mae": 0.681385681473529
+            },
+            "delta_mean_r2": 0.2508447691030122
+          }
+        }
+      },
+      "43": {
+        "training": {
+          "variant": "centered_film_k4",
+          "seed": 43,
+          "best_epoch": 12,
+          "best_val_true_route_macro_mse": 0.5250582874513813,
+          "epochs_ran": 18,
+          "gate": 0.007993895560503006,
+          "trainable_parameters": 27089,
+          "history": [
+            {
+              "epoch": 1,
+              "train_total_loss": 0.40888998638682006,
+              "train_future_mse": 0.4088896421574745,
+              "train_residual_budget": 0.0034595694861281837,
+              "val_true_route_macro_mse": 0.5376316781699179,
+              "gate": 0.007223470602184534
+            },
+            {
+              "epoch": 2,
+              "train_total_loss": 0.3990971434767507,
+              "train_future_mse": 0.3990958047514202,
+              "train_residual_budget": 0.013398168945074583,
+              "val_true_route_macro_mse": 0.5345738998379018,
+              "gate": 0.007265624590218067
+            },
+            {
+              "epoch": 3,
+              "train_total_loss": 0.3961508228999226,
+              "train_future_mse": 0.3961492409976591,
+              "train_residual_budget": 0.01582907700613767,
+              "val_true_route_macro_mse": 0.5300534010299893,
+              "gate": 0.007350577507168055
+            },
+            {
+              "epoch": 4,
+              "train_total_loss": 0.39349335582316425,
+              "train_future_mse": 0.39349150156774443,
+              "train_residual_budget": 0.0185466839955384,
+              "val_true_route_macro_mse": 0.5294417770757297,
+              "gate": 0.007414480671286583
+            },
+            {
+              "epoch": 5,
+              "train_total_loss": 0.39140809183361147,
+              "train_future_mse": 0.39140600028659117,
+              "train_residual_budget": 0.02092269925447572,
+              "val_true_route_macro_mse": 0.5278904799880312,
+              "gate": 0.0075040580704808235
+            },
+            {
+              "epoch": 6,
+              "train_total_loss": 0.3895531956638609,
+              "train_future_mse": 0.3895509482181373,
+              "train_residual_budget": 0.022475357480472375,
+              "val_true_route_macro_mse": 0.526471564806978,
+              "gate": 0.007579529657959938
+            },
+            {
+              "epoch": 7,
+              "train_total_loss": 0.38806076685921487,
+              "train_future_mse": 0.3880583805446865,
+              "train_residual_budget": 0.0238630701826901,
+              "val_true_route_macro_mse": 0.5257749444517829,
+              "gate": 0.00765254907310009
+            },
+            {
+              "epoch": 8,
+              "train_total_loss": 0.3866919398057361,
+              "train_future_mse": 0.386689344874951,
+              "train_residual_budget": 0.02595724638927133,
+              "val_true_route_macro_mse": 0.5267549951030105,
+              "gate": 0.007688643876463175
+            },
+            {
+              "epoch": 9,
+              "train_total_loss": 0.38537424377032686,
+              "train_future_mse": 0.3853716200389782,
+              "train_residual_budget": 0.026236327967661267,
+              "val_true_route_macro_mse": 0.5296202558511217,
+              "gate": 0.007766178343445063
+            },
+            {
+              "epoch": 10,
+              "train_total_loss": 0.3836587497166225,
+              "train_future_mse": 0.3836559305171005,
+              "train_residual_budget": 0.028191114094953576,
+              "val_true_route_macro_mse": 0.5265576994390372,
+              "gate": 0.007868449203670025
+            },
+            {
+              "epoch": 11,
+              "train_total_loss": 0.3824845776587975,
+              "train_future_mse": 0.38248153419053854,
+              "train_residual_budget": 0.03043629980387808,
+              "val_true_route_macro_mse": 0.5270851810681042,
+              "gate": 0.00791748333722353
+            },
+            {
+              "epoch": 12,
+              "train_total_loss": 0.38126039692834646,
+              "train_future_mse": 0.38125733880936596,
+              "train_residual_budget": 0.030579164976394978,
+              "val_true_route_macro_mse": 0.5250582874513813,
+              "gate": 0.007993895560503006
+            },
+            {
+              "epoch": 13,
+              "train_total_loss": 0.38030227593013216,
+              "train_future_mse": 0.38029910035493997,
+              "train_residual_budget": 0.031756002706389466,
+              "val_true_route_macro_mse": 0.5256239538590334,
+              "gate": 0.008028852753341198
+            },
+            {
+              "epoch": 14,
+              "train_total_loss": 0.3792899014318691,
+              "train_future_mse": 0.3792865715858315,
+              "train_residual_budget": 0.033298517068644534,
+              "val_true_route_macro_mse": 0.5256672062318485,
+              "gate": 0.008085989393293858
+            },
+            {
+              "epoch": 15,
+              "train_total_loss": 0.37854161645684925,
+              "train_future_mse": 0.37853826557387826,
+              "train_residual_budget": 0.033507997592707645,
+              "val_true_route_macro_mse": 0.525861072361087,
+              "gate": 0.008116163313388824
+            },
+            {
+              "epoch": 16,
+              "train_total_loss": 0.37776498609230297,
+              "train_future_mse": 0.3777615022258598,
+              "train_residual_budget": 0.0348321427004177,
+              "val_true_route_macro_mse": 0.5258837899553087,
+              "gate": 0.008164255879819393
+            },
+            {
+              "epoch": 17,
+              "train_total_loss": 0.3769846954265562,
+              "train_future_mse": 0.3769811716149835,
+              "train_residual_budget": 0.035230024428177284,
+              "val_true_route_macro_mse": 0.5266846730779521,
+              "gate": 0.008226809091866016
+            },
+            {
+              "epoch": 18,
+              "train_total_loss": 0.3766594049559922,
+              "train_future_mse": 0.3766558760104059,
+              "train_residual_budget": 0.03529958073988933,
+              "val_true_route_macro_mse": 0.5254942530981855,
+              "gate": 0.008282173424959183
+            }
+          ]
+        },
+        "checkpoint": {
+          "path": "${PROJECT_ROOT}/artifacts/action_influence_pilot_v1/centered_film_k4/seed_43/best.pt",
+          "sha256": "3fcd8f4cec4d0d8a8d62622eaa38427b454d045d7d616729f0acf97b9bb65cbb",
+          "bytes": 114044
+        },
+        "metrics": {
+          "controls": {
+            "true": {
+              "micro_mse": 0.4902588129043579,
+              "route_macro_mse": 0.5250582890030201
+            },
+            "shuffled": {
+              "micro_mse": 0.5053805112838745,
+              "route_macro_mse": 0.5430195898401596,
+              "relative_penalty_vs_true_percent": 3.4208203571539513
+            },
+            "zero": {
+              "micro_mse": 0.5658639669418335,
+              "route_macro_mse": 0.5874610965461914,
+              "relative_penalty_vs_true_percent": 11.884929511666533
+            },
+            "hold": {
+              "micro_mse": 0.49787890911102295,
+              "route_macro_mse": 0.5317554521798079,
+              "relative_penalty_vs_true_percent": 1.275508513446074
+            },
+            "reverse": {
+              "micro_mse": 0.49332064390182495,
+              "route_macro_mse": 0.5304167852001197,
+              "relative_penalty_vs_true_percent": 1.0205526337417337
+            },
+            "other": {
+              "micro_mse": 0.5862389802932739,
+              "route_macro_mse": 0.6130648149140959,
+              "relative_penalty_vs_true_percent": 16.761286842682264
+            }
+          },
+          "action_separation_rms": 0.16534703969955444,
+          "residual_to_base_error_rms_ratio": 0.24498751759529114,
+          "gate": 0.007993895560503006,
+          "spatial_map_definition": "RMS_channel_sample(prediction_control - prediction_true); oracle-warp overlap mask; model response map, not causal influence",
+          "finite_difference_sensitivity": 0.024307148531079292,
+          "inverse_action_probe": {
+            "state_only": {
+              "mean_r2": -0.7256852536415316,
+              "normalized_mae": 0.7900292856082498
+            },
+            "state_plus_predicted_residual": {
+              "mean_r2": -0.8256757092682108,
+              "normalized_mae": 0.7382594698398378
+            },
+            "delta_mean_r2": -0.09999045562667919
+          }
+        }
+      }
+    }
+  },
+  "equal_capacity": {
+    "parameter_counts": {
+      "uncentered_film": 27089,
+      "centered_film_k4": 27089
+    },
+    "pass": true
+  },
+  "verdict": {
+    "status": "inconclusive",
+    "summary": "일부 개선 신호는 있으나 route-bootstrap/action-use gate가 모두 충족되지 않았다.",
+    "next_step": "현재 validation에 맞춘 추가 튜닝은 하지 않는다. paired counterfactual 데이터나 독립 route를 확보한 뒤 같은 고정 설정으로 한 번 재실행한다.",
+    "pooled_centered": {
+      "seed_improvement_percent": {
+        "17": 4.832726355722518,
+        "29": 4.755774636513767,
+        "43": 4.597112033772109
+      },
+      "seed_sensitivity": {
+        "17": 0.027189014479517937,
+        "29": 0.024708300828933716,
+        "43": 0.024307148531079292
+      },
+      "seeds_meeting_improvement_gate": 3,
+      "required_seeds": 2,
+      "improvement": {
+        "point_percent": 4.7285474150567754,
+        "ci95_lower_percent": -0.6233894722978667,
+        "ci95_upper_percent": 9.290821063024795,
+        "bootstrap_unit": "route",
+        "routes": 3,
+        "samples": 2000,
+        "ratio_denominator": "numerator"
+      },
+      "shuffled_penalty": {
+        "point_percent": 3.8927888191280524,
+        "ci95_lower_percent": 3.2113738063395965,
+        "ci95_upper_percent": 4.843406445676593,
+        "bootstrap_unit": "route",
+        "routes": 3,
+        "samples": 2000,
+        "ratio_denominator": "denominator"
+      },
+      "generic_correction_flag": false
+    },
+    "stage2_query_adapter_authorized": false,
+    "reason_stage2_not_automatically_authorized": "Even a proxy GO requires paired same-state counterfactual data before model expansion."
+  },
+  "limitations": [
+    "TF++ supplies frozen perception latents but is not a latent world model.",
+    "The passive predictor is trained locally then frozen; it is not a pretrained WM.",
+    "Each state has one logged action/future, so causal counterfactual accuracy is unmeasured.",
+    "Recorded controls are 4 Hz proxies and are not exact applied 20 Hz actuator sequences.",
+    "Future recorded pose is used for oracle ego alignment.",
+    "Only three validation routes are available; route-bootstrap intervals are coarse.",
+    "No cache test record is evaluated, but no untouched-test claim is made."
+  ]
+}

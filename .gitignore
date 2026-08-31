@@ -1,0 +1,52 @@
+# Secrets and machine-local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+secrets.*
+
+# Private/generated experiment material
+/data/
+/artifacts/
+/frozen/
+/release_build/
+**/*sealed*
+**/*test_opened*.json
+
+# Models, arrays, archives, and generated media
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.pkl
+*.pickle
+*.npz
+*.npy
+*.laz
+*.gz
+*.tgz
+*.zip
+*.jpg
+*.jpeg
+*.png
+*.mp4
+
+# Runtime/build caches
+*.log
+*.pid
+*.lock
+*.tmp
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+build/
+dist/
+*.egg-info/
+

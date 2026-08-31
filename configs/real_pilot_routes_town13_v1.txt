@@ -1,0 +1,16 @@
+# Relative route XML, traffic-manager seed, immutable output directory.
+# Accident/1044_0 is the separately collected one-route real smoke and is not repeated here.
+AccidentTwoWays/1153_0.xml 1153 AccidentTwoWays_1153_0
+BlockedIntersection/1634_0.xml 1634 BlockedIntersection_1634_0
+ConstructionObstacle/1260_0.xml 1260 ConstructionObstacle_1260_0
+ControlLoss/1589_0.xml 1589 ControlLoss_1589_0
+DynamicObjectCrossing/1317_0.xml 1317 DynamicObjectCrossing_1317_0
+EnterActorFlow/1382_0.xml 1382 EnterActorFlow_1382_0
+HazardAtSideLane/1619_0.xml 1619 HazardAtSideLane_1619_0
+HighwayCutIn/1586_0.xml 1586 HighwayCutIn_1586_0
+InvadingTurn/1575_0.xml 1575 InvadingTurn_1575_0
+NonSignalizedJunctionLeftTurn/1509_0.xml 1509 NonSignalizedJunctionLeftTurn_1509_0
+OppositeVehicleRunningRedLight/1245_0.xml 1245 OppositeVehicleRunningRedLight_1245_0
+PedestrianCrossing/1061_0.xml 1061 PedestrianCrossing_1061_0
+SignalizedJunctionRightTurn/1121_0.xml 1121 SignalizedJunctionRightTurn_1121_0
+VehicleTurningRoute/1160_0.xml 1160 VehicleTurningRoute_1160_0

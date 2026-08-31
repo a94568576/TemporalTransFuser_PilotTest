@@ -1,0 +1,34 @@
+{
+  "cache_root": "${PROJECT_ROOT}/data/cache_action_latent_town13_v1_native64",
+  "cache_index_sha256": "8d7b8459dbfcf53c676f6b936ca3e8383fa9db762d6031f823b3fdb3f68a1aea",
+  "analysis_splits": [
+    "train",
+    "val"
+  ],
+  "test_evaluation_performed": false,
+  "test_lock_claim": "none: this cache was extracted and deep-audited across all records; test is simply excluded from training/evaluation",
+  "horizon_saved_frames": 4,
+  "nominal_horizon_seconds": 1.0,
+  "train_transitions": 952,
+  "val_transitions": 286,
+  "train_routes": 9,
+  "val_routes": 3,
+  "feature_shape": [
+    64,
+    64,
+    64
+  ],
+  "action_shape": [
+    4,
+    3
+  ],
+  "action_semantics": [
+    "saved_steer_pre_noise",
+    "saved_throttle_pre_some_overrides",
+    "bool(brake_or_control_brake)"
+  ],
+  "oracle_ego_warp": "current BEV warped to future ego frame using recorded future pose; diagnostic, not deployable prediction",
+  "train_sample_ids_sha256": "094e314be2ea8f7a87f5c9efb07c66f27294c7f030bf4b2c2a89f6c285e18479",
+  "val_sample_ids_sha256": "3dab98d8a516641f923c9986f53d1db0ed9043e7f14e4e8e80d2b36db46779d8",
+  "control_manifest_sha256": "ed9ff5106ed9e95e45d13c75d42a8496bfa667ef0dbe599d588b19f6c6a8bce4"
+}

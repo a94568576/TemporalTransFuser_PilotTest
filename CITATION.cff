@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this pilot archive, please cite it using this metadata."
+title: "TemporalTransFuser PilotTest"
+type: software
+version: 0.1.0
+date-released: 2026-08-31
+authors:
+  - family-names: "Kim"
+    given-names: "Daeyong"
+repository-code: "https://github.com/a94568576/TemporalTransFuser_PilotTest"
+abstract: >-
+  Curated code, protocols, and negative-result evidence for temporal residual,
+  action-influence, and MPC-local grounding pilots using frozen TransFuser/CARLA
+  representations.
+

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "experiment": "mpc_local_grounding_pilot_v1",
+  "mode": "validation",
+  "status": "failed_preflight",
+  "created_at": "2026-08-28T07:58:50.346434+00:00",
+  "completed_at": "2026-08-28T07:58:50.346444+00:00",
+  "smoke": false,
+  "open_test_requested": false,
+  "error": {
+    "type": "ValueError",
+    "message": "V1 requires collision-free records because predicted cost has no collision head; real collision labels must never be injected"
+  },
+  "diagnoses": [
+    {
+      "code": "collision_head_absent_fail_closed",
+      "classification": "structural_no_go_for_v1",
+      "evidence": "V1 requires collision-free records because predicted cost has no collision head; real collision labels must never be injected"
+    }
+  ],
+  "paths": {
+    "config": "${PROJECT_ROOT}/configs/mpc_local_grounding_pilot_v1.yaml",
+    "data": "${PROJECT_ROOT}/data/mpc_local_grounding_carla_v1/records.npz",
+    "manifest": "${PROJECT_ROOT}/data/mpc_local_grounding_carla_v1/manifest.json"
+  },
+  "automatic_tuning_performed": false,
+  "gates_changed": false
+}
