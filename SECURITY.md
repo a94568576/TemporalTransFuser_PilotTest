@@ -15,4 +15,3 @@ This repository contains research tooling, not a hardened data-ingestion service
 
 Do not report a vulnerability by committing secrets or private data to the
 repository. Rotate any credential immediately if it is accidentally exposed.
-

@@ -14,4 +14,3 @@ arrays, images, and sealed/test payloads are intentionally excluded.
 
 The initial Action Influence run is retained under `initial_full_run/` to disclose
 the result before the mandatory raw-persistence sanity gate was added.
-

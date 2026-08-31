@@ -12,4 +12,3 @@ abstract: >-
   Curated code, protocols, and negative-result evidence for temporal residual,
   action-influence, and MPC-local grounding pilots using frozen TransFuser/CARLA
   representations.
-

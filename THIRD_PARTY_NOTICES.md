@@ -10,4 +10,3 @@ parts of the workflow depend on them:
 Users must obtain these dependencies separately and comply with their respective
 licenses. No CARLA assets, CARLA route packages, pretrained checkpoints, nuScenes
 data, or generated sensor datasets are redistributed here.
-
